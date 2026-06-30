@@ -55,25 +55,10 @@ async function finishOAuth(req: NextRequest, params: { provider: string }, input
 
   // Match the OAuth email to an existing account (created via signup or a prior OAuth login).
   const users = await db.user.findMany({ where: { email: profile.email }, include: { institution: true } });
-  let user = users[0];
+  const user = users[0];
 
   if (!user) {
-    // First-time social sign-in: provision a fresh institution + admin (real "Sign up with Google").
-    const baseName = `${profile.name}'s Institution`;
-    const codeFrom = () => {
-      const b = profile.name.replace(/[^a-zA-Z]/g, '').slice(0, 5).toUpperCase() || 'INST';
-      return `${b}-${Math.floor(100 + Math.random() * 900)}`;
-    };
-    let code = codeFrom();
-    while (await db.institution.findUnique({ where: { code } })) code = codeFrom();
-
-    const institution = await db.institution.create({ data: { name: baseName, type: 'SCHOOL', currency: 'USD', code } });
-    user = await db.user.create({
-      data: { institutionId: institution.id, email: profile.email, name: profile.name, role: 'INSTITUTION_ADMIN', provider },
-      include: { institution: true },
-    });
-    const klass = await db.schoolClass.create({ data: { institutionId: institution.id, name: 'Grade 1', grade: '1' } });
-    await db.section.create({ data: { institutionId: institution.id, classId: klass.id, name: '1-A', capacity: 40 } });
+    return fail('oauth_no_account');
   } else if (user.provider === 'password') {
     // Existing password account → link this provider so future social logins work too.
     await db.user.update({ where: { id: user.id }, data: { provider } });
