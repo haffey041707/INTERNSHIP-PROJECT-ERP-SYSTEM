@@ -1,9 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createHmac, timingSafeEqual } from 'crypto';
 import { db } from '@/lib/db';
 import { exchangeCodeForUser, Provider } from '@/lib/oauth';
 import { createSession } from '@/lib/session';
 
 const VALID: Provider[] = ['google', 'microsoft'];
+const STATE_SECRET = process.env.SESSION_SECRET ?? 'dev-session-secret';
+
+type SignedState = {
+  provider: Provider;
+  nonce: string;
+  callbackOrigin: string;
+  iat: number;
+};
+
+function verifySignedState(state: string | null, provider: Provider): SignedState | null {
+  if (!state) return null;
+  const [payload, sig] = state.split('.');
+  if (!payload || !sig) return null;
+
+  const expected = createHmac('sha256', STATE_SECRET).update(payload).digest('hex');
+  const a = Buffer.from(sig);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
+
+  try {
+    const parsed = JSON.parse(Buffer.from(payload, 'base64url').toString()) as SignedState;
+    if (parsed.provider !== provider || !parsed.nonce || !parsed.callbackOrigin) return null;
+    if (Date.now() - parsed.iat > 10 * 60 * 1000) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
 
 async function finishOAuth(req: NextRequest, params: { provider: string }, input: { code: string | null; state: string | null; user?: string | null }) {
   const provider = params.provider as Provider;
@@ -13,11 +42,13 @@ async function finishOAuth(req: NextRequest, params: { provider: string }, input
   const fail = (e: string) => NextResponse.redirect(new URL(`/login?error=${e}`, req.url));
 
   if (!VALID.includes(provider) || !code) return fail('oauth_failed');
-  if (!state || state !== cookieState) return fail('oauth_failed'); // CSRF check
+  const signedState = verifySignedState(state, provider);
+  if (!signedState) return fail('oauth_failed');
+  if (cookieState && cookieState !== signedState.nonce) return fail('oauth_failed');
 
   let profile: { email: string; name: string };
   try {
-    profile = await exchangeCodeForUser(provider, code, req.nextUrl.origin);
+    profile = await exchangeCodeForUser(provider, code, signedState.callbackOrigin);
   } catch {
     return fail('oauth_failed');
   }
