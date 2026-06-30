@@ -1,0 +1,10 @@
+{
+  "name": "@edunexus/design-tokens",
+  "version": "0.1.0",
+  "private": true,
+  "main": "tokens.ts",
+  "exports": {
+    ".": "./tokens.ts",
+    "./tailwind-preset": "./tailwind-preset.js"
+  }
+}

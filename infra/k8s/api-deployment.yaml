@@ -1,0 +1,51 @@
+# Sample production-style Deployment for the API (see docs/10). HPA scales on CPU;
+# secrets come from External Secrets Operator → AWS Secrets Manager. Non-root, probes,
+# topology spread across AZs.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: edunexus-api
+  labels: { app: edunexus-api, tier: backend }
+spec:
+  replicas: 3
+  selector: { matchLabels: { app: edunexus-api } }
+  strategy: { type: RollingUpdate, rollingUpdate: { maxSurge: 1, maxUnavailable: 0 } }
+  template:
+    metadata:
+      labels: { app: edunexus-api }
+    spec:
+      securityContext: { runAsNonRoot: true, runAsUser: 1000 }
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector: { matchLabels: { app: edunexus-api } }
+      containers:
+        - name: api
+          image: <ECR_REPO>/edunexus-api:<GIT_SHA>
+          ports: [{ containerPort: 4000 }]
+          envFrom:
+            - secretRef: { name: edunexus-api-secrets }
+          resources:
+            requests: { cpu: "250m", memory: "512Mi" }
+            limits: { cpu: "1", memory: "1Gi" }
+          readinessProbe: { httpGet: { path: /api/v1/health, port: 4000 }, initialDelaySeconds: 10, periodSeconds: 10 }
+          livenessProbe:  { httpGet: { path: /api/v1/health, port: 4000 }, initialDelaySeconds: 20, periodSeconds: 15 }
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: { name: edunexus-api }
+spec:
+  scaleTargetRef: { apiVersion: apps/v1, kind: Deployment, name: edunexus-api }
+  minReplicas: 3
+  maxReplicas: 30
+  metrics:
+    - type: Resource
+      resource: { name: cpu, target: { type: Utilization, averageUtilization: 65 } }
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata: { name: edunexus-api }
+spec:
+  minAvailable: 2
+  selector: { matchLabels: { app: edunexus-api } }

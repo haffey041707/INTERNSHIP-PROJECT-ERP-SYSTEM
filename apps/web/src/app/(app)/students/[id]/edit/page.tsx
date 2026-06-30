@@ -1,0 +1,62 @@
+import { redirect, notFound } from 'next/navigation';
+import Link from 'next/link';
+import { db } from '@/lib/db';
+import { getSession } from '@/lib/session';
+import { updateStudent } from '../../../actions';
+
+export const dynamic = 'force-dynamic';
+
+export default async function EditStudentPage({ params }: { params: { id: string } }) {
+  const institutionId = getSession()!.institutionId;
+  const [student, sections] = await Promise.all([
+    db.student.findFirst({ where: { id: params.id, institutionId } }),
+    db.section.findMany({ where: { institutionId }, orderBy: { name: 'asc' } }),
+  ]);
+  if (!student) notFound();
+
+  async function action(formData: FormData) {
+    'use server';
+    await updateStudent(formData);
+    redirect(`/students/${params.id}`);
+  }
+
+  return (
+    <div className="max-w-2xl">
+      <Link href={`/students/${student.id}`} className="text-sm text-slate-500">← Back to profile</Link>
+      <h1 className="text-2xl font-extrabold text-slate-900 mt-2 mb-6">Edit Student</h1>
+
+      <form action={action} className="space-y-4 bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+        <input type="hidden" name="id" value={student.id} />
+        <div className="grid grid-cols-2 gap-4">
+          <Field name="firstName" label="First name" defaultValue={student.firstName} required />
+          <Field name="lastName" label="Last name" defaultValue={student.lastName} required />
+          <Select name="gender" label="Gender" defaultValue={student.gender ?? ''} options={[['', '—'], ['M', 'Male'], ['F', 'Female']]} />
+          <Select name="status" label="Status" defaultValue={student.status}
+            options={[['ACTIVE', 'Active'], ['GRADUATED', 'Graduated'], ['TRANSFERRED', 'Transferred'], ['WITHDRAWN', 'Withdrawn']]} />
+          <label className="block col-span-2"><span className="text-sm text-slate-600">Section</span>
+            <select name="sectionId" defaultValue={student.sectionId ?? ''} className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-900">
+              <option value="">— Unassigned —</option>
+              {sections.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+            </select></label>
+          <Field name="guardianName" label="Guardian name" defaultValue={student.guardianName ?? ''} />
+          <Field name="guardianPhone" label="Guardian phone" defaultValue={student.guardianPhone ?? ''} />
+        </div>
+        <div className="flex gap-3 pt-2">
+          <button className="px-4 py-2 rounded-lg bg-brand-600 text-white text-sm">Save changes</button>
+          <Link href={`/students/${student.id}`} className="px-4 py-2 rounded-lg border border-slate-200 text-sm">Cancel</Link>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function Field({ name, label, defaultValue, required }: { name: string; label: string; defaultValue?: string; required?: boolean }) {
+  return <label className="block"><span className="text-sm text-slate-600">{label}</span>
+    <input name={name} defaultValue={defaultValue} required={required}
+      className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-900 focus:ring-2 focus:ring-brand-500 outline-none" /></label>;
+}
+function Select({ name, label, defaultValue, options }: { name: string; label: string; defaultValue: string; options: [string, string][] }) {
+  return <label className="block"><span className="text-sm text-slate-600">{label}</span>
+    <select name={name} defaultValue={defaultValue} className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-900">
+      {options.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></label>;
+}

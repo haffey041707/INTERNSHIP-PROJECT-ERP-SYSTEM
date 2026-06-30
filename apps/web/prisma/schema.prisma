@@ -1,0 +1,200 @@
+// Working dev database for the running app — embedded SQLite (no Docker needed).
+// This powers the live, clickable system. The production design uses PostgreSQL + RLS
+// (see /prisma/schema.prisma and docs/02, docs/03). SQLite has no enums/Json, so those
+// are modeled as String here. Tenant scoping is by `institutionId` on every row.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Institution {
+  id           String   @id @default(cuid())
+  code         String   @unique            // "DEMO-001"
+  name         String
+  type         String   @default("SCHOOL")
+  currency     String   @default("USD")
+  primaryColor String   @default("#6D28D9")
+  createdAt    DateTime @default(now())
+
+  users    User[]
+  teachers Teacher[]
+  classes  SchoolClass[]
+  sections Section[]
+  students Student[]
+}
+
+model User {
+  id            String   @id @default(cuid())
+  institutionId String
+  institution   Institution @relation(fields: [institutionId], references: [id])
+  email         String
+  name          String
+  role          String   @default("INSTITUTION_ADMIN") // SUPER_ADMIN | INSTITUTION_ADMIN | TEACHER | ACCOUNTANT
+  passwordHash  String?                                 // null for OAuth-only accounts
+  provider      String   @default("password")          // password | google | microsoft
+  createdAt     DateTime @default(now())
+
+  resets        PasswordReset[]
+
+  @@unique([institutionId, email])
+  @@index([email])
+}
+
+model PasswordReset {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  tokenHash String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Teacher {
+  id            String   @id @default(cuid())
+  institutionId String
+  institution   Institution @relation(fields: [institutionId], references: [id])
+  name          String
+  email         String
+  subject       String
+  phone         String?
+  qualification String?
+  createdAt     DateTime @default(now())
+}
+
+model SchoolClass {
+  id            String   @id @default(cuid())
+  institutionId String
+  institution   Institution @relation(fields: [institutionId], references: [id])
+  name          String                       // "Grade 9"
+  grade         String
+  sections      Section[]
+}
+
+model Section {
+  id            String   @id @default(cuid())
+  institutionId String
+  institution   Institution @relation(fields: [institutionId], references: [id])
+  classId       String
+  schoolClass   SchoolClass @relation(fields: [classId], references: [id])
+  name          String                       // "9-A"
+  capacity      Int      @default(40)
+  students      Student[]
+  exams         Exam[]
+  timetable     TimetableSlot[]
+}
+
+model Student {
+  id            String   @id @default(cuid())
+  institutionId String
+  institution   Institution @relation(fields: [institutionId], references: [id])
+  admissionNo   String
+  firstName     String
+  lastName      String
+  gender        String?
+  status        String   @default("ACTIVE")  // ACTIVE | GRADUATED | TRANSFERRED | WITHDRAWN
+  sectionId     String?
+  section       Section? @relation(fields: [sectionId], references: [id])
+  guardianName  String?
+  guardianPhone String?
+  createdAt     DateTime @default(now())
+
+  attendance AttendanceRecord[]
+  invoices   FeeInvoice[]
+  marks      Mark[]
+
+  @@unique([institutionId, admissionNo])
+}
+
+model AttendanceRecord {
+  id            String   @id @default(cuid())
+  institutionId String
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id])
+  date          String                        // YYYY-MM-DD
+  status        String   @default("PRESENT")  // PRESENT | ABSENT | LATE
+  createdAt     DateTime @default(now())
+
+  @@unique([studentId, date])
+}
+
+model FeeInvoice {
+  id            String   @id @default(cuid())
+  institutionId String
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id])
+  title         String                        // "Tuition - Term 1"
+  amountCents   Int
+  paidCents     Int      @default(0)
+  status        String   @default("PENDING")  // PENDING | PARTIAL | PAID
+  dueDate       String
+  createdAt     DateTime @default(now())
+
+  payments Payment[]
+}
+
+model Payment {
+  id            String   @id @default(cuid())
+  institutionId String
+  invoiceId     String
+  invoice       FeeInvoice @relation(fields: [invoiceId], references: [id])
+  amountCents   Int
+  method        String   @default("CASH")     // CASH | CARD | ONLINE
+  paidAt        DateTime @default(now())
+}
+
+model Exam {
+  id            String   @id @default(cuid())
+  institutionId String
+  name          String                        // "Mid-Term"
+  subject       String
+  sectionId     String
+  section       Section  @relation(fields: [sectionId], references: [id])
+  maxMarks      Int      @default(100)
+  date          String
+  createdAt     DateTime @default(now())
+  marks         Mark[]
+}
+
+model Mark {
+  id            String   @id @default(cuid())
+  institutionId String
+  examId        String
+  exam          Exam     @relation(fields: [examId], references: [id])
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id])
+  score         Int      @default(0)
+
+  @@unique([examId, studentId])
+}
+
+model TimetableSlot {
+  id            String   @id @default(cuid())
+  institutionId String
+  sectionId     String
+  section       Section  @relation(fields: [sectionId], references: [id])
+  day           String                         // MON | TUE | WED | THU | FRI
+  period        Int
+  subject       String
+  teacherName   String?
+  startTime     String                         // "09:00"
+  endTime       String                         // "09:45"
+  createdAt     DateTime @default(now())
+
+  @@unique([sectionId, day, period])
+}
+
+model Announcement {
+  id            String   @id @default(cuid())
+  institutionId String
+  title         String
+  body          String
+  audience      String   @default("ALL")       // ALL | TEACHERS | STUDENTS | PARENTS
+  authorName    String?
+  createdAt     DateTime @default(now())
+}

@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push: { branches: [main] }
+  pull_request: {}
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env: { POSTGRES_USER: edunexus, POSTGRES_PASSWORD: edunexus, POSTGRES_DB: edunexus_test }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U edunexus" --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+    env:
+      DATABASE_URL: postgresql://edunexus:edunexus@localhost:5432/edunexus_test?schema=public
+      REDIS_URL: redis://localhost:6379
+      JWT_ACCESS_SECRET: ci-access
+      JWT_REFRESH_SECRET: ci-refresh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @edunexus/api prisma:generate
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm --filter @edunexus/api prisma migrate deploy --schema prisma/schema.prisma || true
+      # CRITICAL GATE: cross-tenant isolation suite must pass (see docs/03 §3.7)
+      - run: pnpm test
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Secret scan (gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+      - name: Static analysis (Semgrep)
+        uses: returntocorp/semgrep-action@v1
+        with: { config: p/typescript }

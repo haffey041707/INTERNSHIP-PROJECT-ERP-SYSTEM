@@ -1,0 +1,252 @@
+// EduNexus — Multi-tenant ERP schema (foundation subset).
+// Every tenant-scoped model has `tenantId` and is protected by Postgres RLS
+// (policies applied in prisma/migrations/.../rls.sql — see seed/README).
+// This subset covers the CORE + a few representative feature tables so the app
+// runs end-to-end; feature modules extend it following the same pattern.
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [pgcrypto, vector]
+}
+
+// ─────────────────────────── PLATFORM / TENANCY (global) ───────────────────────────
+
+enum InstitutionType {
+  SCHOOL
+  COLLEGE
+  UNIVERSITY
+  INSTITUTE
+}
+
+enum TenantStatus {
+  PROVISIONING
+  PENDING_REVIEW
+  ACTIVE
+  SUSPENDED
+  ARCHIVED
+}
+
+enum IsolationTier {
+  POOLED
+  SCHEMA
+  SILO
+}
+
+model Tenant {
+  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  institutionCode String          @unique @map("institution_code")  // e.g. DEMO-001
+  name            String
+  type            InstitutionType @default(SCHOOL)
+  status          TenantStatus    @default(PROVISIONING)
+  isolationTier   IsolationTier   @default(POOLED) @map("isolation_tier")
+  region          String          @default("us-east-1")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+
+  settings   TenantSettings?
+  domains    TenantDomain[]
+  users      User[]
+  roles      Role[]
+  students   Student[]
+  sections   Section[]
+  auditLogs  AuditLog[]
+
+  @@map("tenants")
+}
+
+model TenantSettings {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId  String   @unique @map("tenant_id") @db.Uuid
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  locale    String   @default("en")
+  timezone  String   @default("UTC")
+  currency  String   @default("USD")
+  branding  Json     @default("{}")   // { logoUrl, primaryColor, ... }
+  features  Json     @default("{}")   // feature flags resolved from plan
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("tenant_settings")
+}
+
+model TenantDomain {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  domain    String   @unique           // portal.harvard-demo.edu or harvard-demo.edunexus.app
+  isPrimary Boolean  @default(false) @map("is_primary")
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("tenant_domains")
+}
+
+// ─────────────────────────── IDENTITY & ACCESS (tenant-scoped) ───────────────────────────
+
+enum UserStatus {
+  ACTIVE
+  INVITED
+  SUSPENDED
+}
+
+model User {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId     String   @map("tenant_id") @db.Uuid
+  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  email        String
+  username     String?
+  phone        String?
+  passwordHash String?  @map("password_hash")
+  firstName    String   @map("first_name")
+  lastName     String   @map("last_name")
+  status       UserStatus @default(ACTIVE)
+  mfaEnabled   Boolean  @default(false) @map("mfa_enabled")
+  lastLoginAt  DateTime? @map("last_login_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+
+  roles    UserRole[]
+  sessions Session[]
+
+  @@unique([tenantId, email])
+  @@index([tenantId, status])
+  @@map("users")
+}
+
+model Role {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId    String   @map("tenant_id") @db.Uuid
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  key         String                       // SUPER_ADMIN, INSTITUTION_ADMIN, TEACHER, ...
+  name        String
+  isSystem    Boolean  @default(false) @map("is_system")
+  permissions RolePermission[]
+  users       UserRole[]
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@unique([tenantId, key])
+  @@map("roles")
+}
+
+model Permission {
+  id    String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key   String @unique          // e.g. "students:create" (global catalog)
+  group String                  // e.g. "students"
+  roles RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String     @map("role_id") @db.Uuid
+  permissionId String     @map("permission_id") @db.Uuid
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model UserRole {
+  userId String @map("user_id") @db.Uuid
+  roleId String @map("role_id") @db.Uuid
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  scope  Json   @default("{}")   // ABAC scope: { campusId?, departmentId?, sectionIds? }
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model Session {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId     String   @map("tenant_id") @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshHash  String   @map("refresh_hash")
+  device       String?
+  ip           String?
+  expiresAt    DateTime @map("expires_at")
+  revokedAt    DateTime? @map("revoked_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([tenantId, userId])
+  @@map("sessions")
+}
+
+// ─────────────────────────── AUDIT (tenant-scoped, append-only) ───────────────────────────
+
+model AuditLog {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  actorId    String?  @map("actor_id") @db.Uuid
+  action     String                       // "student.create"
+  resource   String                       // "student"
+  resourceId String?  @map("resource_id")
+  before     Json?
+  after      Json?
+  ip         String?
+  device     String?
+  requestId  String?  @map("request_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([tenantId, createdAt])
+  @@index([tenantId, resource, resourceId])
+  @@map("audit_logs")
+}
+
+// ─────────────────────────── ACADEMIC STRUCTURE (sample) ───────────────────────────
+
+model Section {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name      String                         // "9-A"
+  grade     String                         // "9"
+  capacity  Int      @default(40)
+  students  Student[]
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([tenantId, name])
+  @@map("sections")
+}
+
+// ─────────────────────────── STUDENTS (sample feature module) ───────────────────────────
+
+enum StudentStatus {
+  ACTIVE
+  GRADUATED
+  TRANSFERRED
+  WITHDRAWN
+}
+
+model Student {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId    String   @map("tenant_id") @db.Uuid
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  admissionNo String   @map("admission_no")
+  rollNo      String?  @map("roll_no")
+  firstName   String   @map("first_name")
+  lastName    String   @map("last_name")
+  dateOfBirth DateTime? @map("date_of_birth") @db.Date
+  gender      String?
+  status      StudentStatus @default(ACTIVE)
+  sectionId   String?  @map("section_id") @db.Uuid
+  section     Section? @relation(fields: [sectionId], references: [id])
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  @@unique([tenantId, admissionNo])
+  @@index([tenantId, sectionId])
+  @@map("students")
+}

@@ -1,0 +1,44 @@
+# Local dev stack for EduNexus. `docker compose -f infra/docker/docker-compose.yml up -d`
+version: "3.9"
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: edunexus
+      POSTGRES_PASSWORD: edunexus
+      POSTGRES_DB: edunexus
+    ports: ["5432:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U edunexus"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports: ["6379:6379"]
+    volumes:
+      - redisdata:/data
+
+  minio: # S3-compatible object storage for local dev
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports: ["9000:9000", "9001:9001"]
+    volumes:
+      - miniodata:/data
+
+  mailhog: # captures outbound email in dev
+    image: mailhog/mailhog
+    ports: ["1025:1025", "8025:8025"]
+
+volumes:
+  pgdata:
+  redisdata:
+  miniodata:

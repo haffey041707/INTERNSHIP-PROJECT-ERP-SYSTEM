@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en" class="">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EduNexus — Live Preview</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: { extend: {
+    fontFamily: { sans: ['Inter','sans-serif'] },
+    colors: { brand: {50:'#F5F3FF',100:'#EDE9FE',200:'#DDD6FE',300:'#C4B5FD',400:'#A78BFA',500:'#8B5CF6',600:'#6D28D9',700:'#5B21B6',800:'#4C1D95',900:'#3B0764'},
+              success:'#10B981',warning:'#F59E0B',danger:'#EF4444',info:'#3B82F6' },
+    backgroundImage: { aurora:'linear-gradient(135deg,#6D28D9 0%,#0EA5E9 100%)', sunrise:'linear-gradient(135deg,#F59E0B 0%,#F43F5E 100%)' },
+  }}
+}
+</script>
+<style>
+  body{font-family:Inter,sans-serif}
+  .glass{background:rgba(255,255,255,.65);backdrop-filter:blur(16px);border:1px solid rgba(148,163,184,.2)}
+  .dark .glass{background:rgba(17,24,39,.6)}
+</style>
+</head>
+<body class="bg-slate-100 text-slate-900">
+
+<!-- ===================== LOGIN SCREEN ===================== -->
+<section id="login" class="min-h-screen grid lg:grid-cols-2">
+  <div class="hidden lg:flex flex-col justify-between p-12 bg-aurora text-white">
+    <div class="text-2xl font-extrabold">🎓 EduNexus</div>
+    <div>
+      <h1 class="text-4xl font-extrabold leading-tight">The AI-powered ERP for modern institutions.</h1>
+      <p class="mt-4 text-white/80 max-w-md">One platform for students, teachers, parents, and admins — secure, multi-tenant, and beautiful.</p>
+      <div class="mt-8 flex gap-6 text-white/90 text-sm">
+        <div><div class="text-2xl font-bold">4,812</div>institutions</div>
+        <div><div class="text-2xl font-bold">612k</div>active users</div>
+        <div><div class="text-2xl font-bold">99.98%</div>uptime</div>
+      </div>
+    </div>
+    <p class="text-white/60 text-sm">Trusted by thousands of schools, colleges &amp; universities worldwide.</p>
+  </div>
+  <div class="flex items-center justify-center p-8 bg-white">
+    <div class="w-full max-w-sm space-y-4">
+      <h2 class="text-2xl font-bold">Sign in</h2>
+      <label class="block"><span class="text-sm text-slate-600">Institution ID</span>
+        <input value="DEMO-001" class="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-brand-500 outline-none"></label>
+      <label class="block"><span class="text-sm text-slate-600">Email or username</span>
+        <input value="admin@demo.edu" class="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-brand-500 outline-none"></label>
+      <label class="block"><span class="text-sm text-slate-600">Password</span>
+        <input type="password" value="ChangeMe!123" class="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-brand-500 outline-none"></label>
+      <button onclick="showApp()" class="w-full py-2.5 rounded-lg bg-brand-600 text-white font-medium hover:bg-brand-700 transition">Sign in</button>
+      <div class="grid grid-cols-2 gap-3">
+        <button class="py-2 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">Google</button>
+        <button class="py-2 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">Microsoft</button>
+      </div>
+      <button class="w-full text-sm text-brand-600">Sign in with OTP instead</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== APP / DASHBOARD ===================== -->
+<section id="app" class="hidden min-h-screen">
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-60 shrink-0 bg-white border-r border-slate-200">
+      <div class="h-14 flex items-center gap-2 px-4 font-extrabold text-brand-700">
+        <span class="grid place-items-center w-8 h-8 rounded-xl bg-aurora text-white">🎓</span> EduNexus
+      </div>
+      <nav class="px-2 py-2 space-y-1 text-sm" id="nav"></nav>
+    </aside>
+    <!-- Main -->
+    <div class="flex-1 flex flex-col min-w-0">
+      <header class="h-14 flex items-center gap-4 px-4 bg-white border-b border-slate-200">
+        <button onclick="document.querySelector('aside').classList.toggle('hidden')" class="text-slate-500">☰</button>
+        <div class="flex-1 max-w-md flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-400 text-sm">🔍 Search students, fees, classes…</div>
+        <span class="text-xs px-2 py-1 rounded-md bg-brand-50 text-brand-700 font-medium">DEMO-001</span>
+        <button class="relative text-slate-500">🔔<span class="absolute -top-1 -right-1 w-4 h-4 text-[10px] grid place-items-center rounded-full bg-danger text-white">3</span></button>
+        <button class="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg bg-aurora text-white">✨ AI</button>
+        <div class="w-8 h-8 rounded-full bg-brand-200 grid place-items-center text-brand-800 text-sm font-semibold">DA</div>
+        <button onclick="showLogin()" class="text-xs text-slate-400 hover:text-danger">Logout</button>
+      </header>
+
+      <main class="flex-1 p-6 overflow-auto bg-slate-100">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-2xl font-extrabold">Good morning, Principal 👋</h1>
+            <p class="text-slate-500 text-sm">Academic Year 2025–26 · EduNexus Demo School</p>
+          </div>
+          <div class="flex gap-2">
+            <button class="px-3 py-2 text-sm rounded-lg bg-white border border-slate-200">Send Notice</button>
+            <button class="px-3 py-2 text-sm rounded-lg bg-brand-600 text-white">+ Add Student</button>
+          </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="kpis"></div>
+
+        <!-- Charts row -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="lg:col-span-2 rounded-xl p-5 bg-white shadow-sm border border-slate-200">
+            <h2 class="font-semibold mb-4">Attendance trend (this term)</h2>
+            <div class="h-48 flex items-end gap-2" id="bars"></div>
+          </div>
+          <div class="rounded-xl p-5 glass shadow-sm">
+            <h2 class="font-semibold mb-3">⚠️ AI risk alerts</h2>
+            <ul class="space-y-3 text-sm" id="alerts"></ul>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</section>
+
+<script>
+const NAV = ['📊 Dashboard','👤 Students','📚 Academics','🗓 Timetable','✓ Attendance','📝 Exams','🎬 LMS','💳 Finance','🚌 Transport','🏠 Hostel','📖 Library','👥 HR','📈 Reports','⚙ Settings'];
+document.getElementById('nav').innerHTML = NAV.map((n,i)=>`<button class="w-full flex items-center gap-3 px-3 py-2 rounded-lg ${i===0?'bg-brand-600 text-white':'text-slate-600 hover:bg-slate-100'}">${n}</button>`).join('');
+
+const KPIS = [
+  ['Students','2,140','+3.1%',true,[12,14,13,16,18,20,21]],
+  ['Attendance today','94.2%','+0.8%',false,[90,91,93,92,94,94,94]],
+  ['Fees collected','78%','+5.4%',false,[60,64,68,70,73,76,78]],
+  ['At-risk (AI)','23','-12%',false,[31,30,28,27,26,24,23]],
+];
+document.getElementById('kpis').innerHTML = KPIS.map(([label,val,delta,accent,spark])=>{
+  const max=Math.max(...spark), up=!delta.startsWith('-');
+  const pts=spark.map((v,i)=>`${i/(spark.length-1)*100},${24-(v/max)*22}`).join(' ');
+  return `<div class="rounded-xl p-4 shadow-sm ${accent?'bg-aurora text-white':'glass'}">
+    <p class="text-sm ${accent?'text-white/80':'text-slate-500'}">${label}</p>
+    <div class="mt-1 flex items-end justify-between">
+      <span class="text-2xl font-bold">${val}</span>
+      <span class="text-xs font-medium ${accent?'text-white/90':up?'text-success':'text-danger'}">${delta}</span>
+    </div>
+    <svg viewBox="0 0 100 24" class="mt-3 w-full h-6"><polyline fill="none" stroke="${accent?'rgba(255,255,255,.8)':'#6D28D9'}" stroke-width="2" points="${pts}"/></svg>
+  </div>`;
+}).join('');
+
+document.getElementById('bars').innerHTML = [82,88,90,86,92,94,91,95,93,96,94,97].map(h=>`<div class="flex-1 rounded-t-md bg-aurora" style="height:${h}%" title="${h}%"></div>`).join('');
+
+document.getElementById('alerts').innerHTML = [
+  ['Ali Raza · 9-B','Attendance dropped 22%'],
+  ['Sara N. · 10-A','Math grade declining'],
+  ['Omar L. · 9-A','Missed 3 assignments'],
+].map(([n,r])=>`<li class="flex items-start justify-between gap-2"><div><p class="font-medium">${n}</p><p class="text-slate-500">${r}</p></div><button class="text-brand-600 text-xs whitespace-nowrap">Review →</button></li>`).join('');
+
+function showApp(){ document.getElementById('login').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); }
+function showLogin(){ document.getElementById('app').classList.add('hidden'); document.getElementById('login').classList.remove('hidden'); }
+</script>
+</body>
+</html>
