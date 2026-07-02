@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Completing Google Sign-In</title>
+    <script>
+      const target = 'https://suzuki-hans-insights-pike.trycloudflare.com/api/auth/google/callback';
+      window.location.replace(target + window.location.search);
+    </script>
+  </head>
+  <body>
+    <a id="continue" href="https://suzuki-hans-insights-pike.trycloudflare.com/api/auth/google/callback">Continue sign-in</a>
+    <script>
+      document.getElementById('continue').href = 'https://suzuki-hans-insights-pike.trycloudflare.com/api/auth/google/callback' + window.location.search;
+    </script>
+  </body>
+</html>
