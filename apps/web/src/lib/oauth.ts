@@ -19,6 +19,13 @@ export function redirectUri(provider: Provider, origin = fallbackBase): string {
   return `${origin}/api/auth/${provider}/callback`;
 }
 
+export function oauthRedirectUri(provider: Provider, origin = fallbackBase): string {
+  if (provider === 'google' && process.env.GOOGLE_REDIRECT_URI) {
+    return process.env.GOOGLE_REDIRECT_URI;
+  }
+  return redirectUri(provider, origin);
+}
+
 export function providerConfig(provider: Provider): ProviderConfig {
   if (provider === 'google') {
     return {
@@ -49,7 +56,7 @@ export function buildAuthUrl(provider: Provider, state: string, origin?: string)
   const c = providerConfig(provider);
   const params = new URLSearchParams({
     client_id: c.clientId,
-    redirect_uri: redirectUri(provider, origin),
+    redirect_uri: oauthRedirectUri(provider, origin),
     response_type: 'code',
     scope: c.scope,
     state,
@@ -74,7 +81,7 @@ export async function exchangeCodeForUser(provider: Provider, code: string, orig
       client_secret: c.clientSecret ?? '',
       code,
       grant_type: 'authorization_code',
-      redirect_uri: redirectUri(provider, origin),
+      redirect_uri: oauthRedirectUri(provider, origin),
     }),
   });
   if (!tokenRes.ok) throw new Error(`Token exchange failed: ${await tokenRes.text()}`);
