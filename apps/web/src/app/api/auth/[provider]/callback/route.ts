@@ -34,12 +34,16 @@ function verifySignedState(state: string | null, provider: Provider): SignedStat
   }
 }
 
+function appUrl(path: string): URL {
+  return new URL(path, process.env.APP_URL ?? 'http://localhost:3000');
+}
+
 async function finishOAuth(req: NextRequest, params: { provider: string }, input: { code: string | null; state: string | null; user?: string | null }) {
   const provider = params.provider as Provider;
   const code = input.code;
   const state = input.state;
   const cookieState = req.cookies.get(`oauth_state_${provider}`)?.value;
-  const fail = (e: string) => NextResponse.redirect(new URL(`/login?error=${e}`, req.url));
+  const fail = (e: string) => NextResponse.redirect(appUrl(`/login?error=${e}`));
 
   if (!VALID.includes(provider) || !code) return fail('oauth_failed');
   const signedState = verifySignedState(state, provider);
@@ -72,7 +76,7 @@ async function finishOAuth(req: NextRequest, params: { provider: string }, input
     role: user.role,
   });
 
-  const res = NextResponse.redirect(new URL('/dashboard', req.url));
+  const res = NextResponse.redirect(appUrl('/dashboard'));
   res.cookies.delete(`oauth_state_${provider}`);
   return res;
 }
