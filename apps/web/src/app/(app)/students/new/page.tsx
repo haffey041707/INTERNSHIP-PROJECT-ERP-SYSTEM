@@ -1,14 +1,14 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
+import { ensureStudentSections } from '@/lib/academic-structure';
 import { createStudent } from '../../actions';
 
 export const dynamic = 'force-dynamic';
 
 export default async function NewStudentPage() {
   const institutionId = getSession()!.institutionId;
-  const sections = await db.section.findMany({ where: { institutionId }, orderBy: { name: 'asc' } });
+  const sections = await ensureStudentSections(institutionId);
 
   async function action(formData: FormData) {
     'use server';
@@ -35,9 +35,9 @@ export default async function NewStudentPage() {
           </label>
           <label className="block sm:col-span-2">
             <span className="text-sm text-slate-600">Section</span>
-            <select name="sectionId" className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-900">
-              <option value="">— Unassigned —</option>
-              {sections.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+            <select name="sectionId" required defaultValue="" className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-900">
+              <option value="" disabled>Choose section</option>
+              {sections.map((s) => <option key={s.id} value={s.id}>{sectionLabel(s)}</option>)}
             </select>
           </label>
           <Field name="guardianName" label="Guardian name" />
@@ -50,6 +50,10 @@ export default async function NewStudentPage() {
       </form>
     </div>
   );
+}
+
+function sectionLabel(section: { name: string; schoolClass?: { name: string } | null }) {
+  return section.schoolClass?.name ? `${section.schoolClass.name} · ${section.name}` : section.name;
 }
 
 function Field({ name, label, required, placeholder }:

@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { hashPassword, verifyPassword } from '@/lib/hash';
+import { ensureStudentSections } from '@/lib/academic-structure';
 import { getInstitutionSuiteForType } from '@/lib/institution-suites';
 import { persistWorkspaceByInstitutionId, restorePersistedAuth } from '@/lib/persistent-auth';
 
@@ -19,6 +20,12 @@ async function tenant() {
 // ── Students ────────────────────────────────────────────────
 export async function createStudent(formData: FormData) {
   const institutionId = await tenant();
+  const sections = await ensureStudentSections(institutionId);
+  const requestedSectionId = String(formData.get('sectionId') || '').trim();
+  const sectionId = sections.some((section) => section.id === requestedSectionId)
+    ? requestedSectionId
+    : sections[0]?.id ?? null;
+
   await db.student.create({
     data: {
       institutionId,
@@ -26,7 +33,7 @@ export async function createStudent(formData: FormData) {
       firstName: String(formData.get('firstName')),
       lastName: String(formData.get('lastName')),
       gender: String(formData.get('gender') || '') || null,
-      sectionId: String(formData.get('sectionId') || '') || null,
+      sectionId,
       guardianName: String(formData.get('guardianName') || '') || null,
       guardianPhone: String(formData.get('guardianPhone') || '') || null,
     },
@@ -38,6 +45,12 @@ export async function createStudent(formData: FormData) {
 export async function updateStudent(formData: FormData) {
   const institutionId = await tenant();
   const id = String(formData.get('id'));
+  const sections = await ensureStudentSections(institutionId);
+  const requestedSectionId = String(formData.get('sectionId') || '').trim();
+  const sectionId = sections.some((section) => section.id === requestedSectionId)
+    ? requestedSectionId
+    : sections[0]?.id ?? null;
+
   await db.student.updateMany({
     where: { id, institutionId },
     data: {
@@ -45,7 +58,7 @@ export async function updateStudent(formData: FormData) {
       lastName: String(formData.get('lastName')),
       gender: String(formData.get('gender') || '') || null,
       status: String(formData.get('status') || 'ACTIVE'),
-      sectionId: String(formData.get('sectionId') || '') || null,
+      sectionId,
       guardianName: String(formData.get('guardianName') || '') || null,
       guardianPhone: String(formData.get('guardianPhone') || '') || null,
     },
@@ -115,6 +128,7 @@ export async function createClassWithSection(formData: FormData) {
     },
   });
 
+  await persistWorkspaceByInstitutionId(institutionId);
   revalidatePath('/classes');
   revalidatePath('/dashboard');
 }
@@ -139,6 +153,7 @@ export async function createSection(formData: FormData) {
     },
   });
 
+  await persistWorkspaceByInstitutionId(institutionId);
   revalidatePath('/classes');
   revalidatePath(`/classes/${classId}`);
   revalidatePath('/dashboard');

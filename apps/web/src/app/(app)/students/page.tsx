@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Search, Trash2, UserPlus } from 'lucide-react';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
+import { ensureStudentSections } from '@/lib/academic-structure';
 import { deleteStudent } from '../actions';
 
 export const dynamic = 'force-dynamic';
@@ -9,6 +10,7 @@ export const dynamic = 'force-dynamic';
 export default async function StudentsPage({ searchParams }: { searchParams: { q?: string } }) {
   const institutionId = getSession()!.institutionId;
   const q = searchParams.q?.trim() ?? '';
+  await ensureStudentSections(institutionId);
 
   const students = await db.student.findMany({
     where: {
@@ -78,7 +80,7 @@ export default async function StudentsPage({ searchParams }: { searchParams: { q
             ))}
             {students.length === 0 && (
               <tr><td colSpan={7} className="px-4 py-10 text-center text-slate-400">
-                No students found. <Link href="/students/new" className="text-brand-600">Add one →</Link>
+                No students found.
               </td></tr>
             )}
           </tbody>
@@ -116,7 +118,6 @@ export default async function StudentsPage({ searchParams }: { searchParams: { q
         {students.length === 0 && (
           <div className="rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm">
             <p className="text-sm text-slate-400">No students found.</p>
-            <Link href="/students/new" className="mt-2 inline-flex text-sm font-medium text-brand-600">Add one</Link>
           </div>
         )}
       </div>

@@ -2,6 +2,7 @@ import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
+import { ensureStudentSections } from '@/lib/academic-structure';
 import { updateStudent } from '../../../actions';
 
 export const dynamic = 'force-dynamic';
@@ -10,7 +11,7 @@ export default async function EditStudentPage({ params }: { params: { id: string
   const institutionId = getSession()!.institutionId;
   const [student, sections] = await Promise.all([
     db.student.findFirst({ where: { id: params.id, institutionId } }),
-    db.section.findMany({ where: { institutionId }, orderBy: { name: 'asc' } }),
+    ensureStudentSections(institutionId),
   ]);
   if (!student) notFound();
 
@@ -34,9 +35,9 @@ export default async function EditStudentPage({ params }: { params: { id: string
           <Select name="status" label="Status" defaultValue={student.status}
             options={[['ACTIVE', 'Active'], ['GRADUATED', 'Graduated'], ['TRANSFERRED', 'Transferred'], ['WITHDRAWN', 'Withdrawn']]} />
           <label className="block sm:col-span-2"><span className="text-sm text-slate-600">Section</span>
-            <select name="sectionId" defaultValue={student.sectionId ?? ''} className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-900">
-              <option value="">— Unassigned —</option>
-              {sections.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+            <select name="sectionId" required defaultValue={student.sectionId ?? ''} className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-900">
+              <option value="" disabled>Choose section</option>
+              {sections.map((s) => <option key={s.id} value={s.id}>{sectionLabel(s)}</option>)}
             </select></label>
           <Field name="guardianName" label="Guardian name" defaultValue={student.guardianName ?? ''} />
           <Field name="guardianPhone" label="Guardian phone" defaultValue={student.guardianPhone ?? ''} />
@@ -48,6 +49,10 @@ export default async function EditStudentPage({ params }: { params: { id: string
       </form>
     </div>
   );
+}
+
+function sectionLabel(section: { name: string; schoolClass?: { name: string } | null }) {
+  return section.schoolClass?.name ? `${section.schoolClass.name} · ${section.name}` : section.name;
 }
 
 function Field({ name, label, defaultValue, required }: { name: string; label: string; defaultValue?: string; required?: boolean }) {

@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
 import { hashPassword } from '@/lib/hash';
+import { ensureStudentSections } from '@/lib/academic-structure';
 import { persistWorkspaceByInstitutionId, restorePersistedAuth } from '@/lib/persistent-auth';
 
 function codeFrom(name: string): string {
@@ -38,8 +39,7 @@ export async function signupAction(_prev: unknown, formData: FormData) {
   });
 
   // starter academic structure so the new admin can add students immediately
-  const klass = await db.schoolClass.create({ data: { institutionId: institution.id, name: 'Grade 1', grade: '1' } });
-  await db.section.create({ data: { institutionId: institution.id, classId: klass.id, name: '1-A', capacity: 40 } });
+  await ensureStudentSections(institution.id);
   await persistWorkspaceByInstitutionId(institution.id);
 
   // No auto-login — send them to sign in (as requested).
