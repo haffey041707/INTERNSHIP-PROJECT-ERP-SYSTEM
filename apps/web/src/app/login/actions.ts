@@ -4,18 +4,25 @@ import { redirect } from 'next/navigation';
 import { createHash, randomBytes } from 'crypto';
 import { db } from '@/lib/db';
 import { hashPassword, verifyPassword } from '@/lib/hash';
+import { persistWorkspaceByInstitutionId, restorePersistedAuth } from '@/lib/persistent-auth';
 import { destroySession, establishSessionForUser } from '@/lib/session';
 
 const sha = (v: string) => createHash('sha256').update(v).digest('hex');
 
 /** Real login: email + password. Institution is resolved automatically from the account. */
 export async function loginAction(_prev: unknown, formData: FormData) {
+  await restorePersistedAuth();
+
   const email = String(formData.get('email') ?? '').trim().toLowerCase();
   const password = String(formData.get('password') ?? '');
 
   if (!email || !password) return { error: 'Enter your email and password.' };
 
-  const users = await db.user.findMany({ where: { email }, orderBy: { createdAt: 'desc' } });
+  let users = await db.user.findMany({ where: { email }, orderBy: { createdAt: 'desc' } });
+  if (users.length === 0) {
+    await restorePersistedAuth({ force: true });
+    users = await db.user.findMany({ where: { email }, orderBy: { createdAt: 'desc' } });
+  }
   if (users.length === 0) return { error: 'No account found for that email.' };
 
   const passwordUsers = users.filter((user) => user.passwordHash);
@@ -42,6 +49,8 @@ export async function logoutAction() {
  * In production this link is emailed instead.
  */
 export async function forgotPasswordAction(_prev: unknown, formData: FormData) {
+  await restorePersistedAuth();
+
   const email = String(formData.get('email') ?? '').trim().toLowerCase();
   const user = await db.user.findFirst({ where: { email } });
 
@@ -75,7 +84,8 @@ export async function resetPasswordAction(_prev: unknown, formData: FormData) {
     return { error: 'This reset link is invalid or has expired.' };
   }
 
-  await db.user.update({ where: { id: reset.userId }, data: { passwordHash: hashPassword(password) } });
+  const user = await db.user.update({ where: { id: reset.userId }, data: { passwordHash: hashPassword(password), provider: 'password' } });
   await db.passwordReset.update({ where: { id: reset.id }, data: { used: true } });
+  await persistWorkspaceByInstitutionId(user.institutionId);
   redirect('/login?reset=1');
 }

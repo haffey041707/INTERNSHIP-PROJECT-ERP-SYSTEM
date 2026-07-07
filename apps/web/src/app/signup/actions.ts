@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
 import { hashPassword } from '@/lib/hash';
+import { persistWorkspaceByInstitutionId, restorePersistedAuth } from '@/lib/persistent-auth';
 
 function codeFrom(name: string): string {
   const base = name.replace(/[^a-zA-Z]/g, '').slice(0, 5).toUpperCase() || 'INST';
@@ -10,6 +11,8 @@ function codeFrom(name: string): string {
 }
 
 export async function signupAction(_prev: unknown, formData: FormData) {
+  await restorePersistedAuth({ force: true });
+
   const name = String(formData.get('name') ?? '').trim();
   const adminName = String(formData.get('adminName') ?? '').trim();
   const email = String(formData.get('email') ?? '').trim().toLowerCase();
@@ -37,6 +40,7 @@ export async function signupAction(_prev: unknown, formData: FormData) {
   // starter academic structure so the new admin can add students immediately
   const klass = await db.schoolClass.create({ data: { institutionId: institution.id, name: 'Grade 1', grade: '1' } });
   await db.section.create({ data: { institutionId: institution.id, classId: klass.id, name: '1-A', capacity: 40 } });
+  await persistWorkspaceByInstitutionId(institution.id);
 
   // No auto-login — send them to sign in (as requested).
   redirect('/login?registered=1');

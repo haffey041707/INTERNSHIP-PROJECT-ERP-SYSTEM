@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/session';
 import { db } from '@/lib/db';
 import { longDate } from '@/lib/format';
+import { restorePersistedAuth } from '@/lib/persistent-auth';
 import { AppShell } from '@/components/AppShell';
 
 export const dynamic = 'force-dynamic';
@@ -10,11 +11,21 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const session = getSession();
   if (!session) redirect('/login');
 
-  const [user, institution, announcements] = await Promise.all([
+  await restorePersistedAuth();
+
+  let [user, institution, announcements] = await Promise.all([
     db.user.findUnique({ where: { id: session.userId }, select: { email: true, name: true, role: true } }),
     db.institution.findUnique({ where: { id: session.institutionId }, select: { code: true, name: true, type: true } }),
     db.announcement.findMany({ where: { institutionId: session.institutionId }, orderBy: { createdAt: 'desc' }, take: 6, select: { id: true, title: true, audience: true, createdAt: true } }),
   ]);
+  if (!user || !institution) {
+    await restorePersistedAuth({ force: true });
+    [user, institution, announcements] = await Promise.all([
+      db.user.findUnique({ where: { id: session.userId }, select: { email: true, name: true, role: true } }),
+      db.institution.findUnique({ where: { id: session.institutionId }, select: { code: true, name: true, type: true } }),
+      db.announcement.findMany({ where: { institutionId: session.institutionId }, orderBy: { createdAt: 'desc' }, take: 6, select: { id: true, title: true, audience: true, createdAt: true } }),
+    ]);
+  }
   if (!user || !institution) redirect('/login');
 
   const brand = '#0F172A';

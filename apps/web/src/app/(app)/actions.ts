@@ -6,11 +6,13 @@ import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { hashPassword, verifyPassword } from '@/lib/hash';
 import { getInstitutionSuiteForType } from '@/lib/institution-suites';
+import { persistWorkspaceByInstitutionId, restorePersistedAuth } from '@/lib/persistent-auth';
 
 /** All actions are scoped to the logged-in institution (tenant). */
 async function tenant() {
   const s = getSession();
   if (!s) throw new Error('UNAUTHENTICATED');
+  await restorePersistedAuth();
   return s.institutionId;
 }
 
@@ -275,6 +277,7 @@ export async function updateInstitution(formData: FormData) {
       currency: String(formData.get('currency') || 'USD'),
     },
   });
+  await persistWorkspaceByInstitutionId(institutionId);
   revalidatePath('/settings');
   revalidatePath('/dashboard');
   revalidatePath('/', 'layout');
@@ -296,6 +299,7 @@ export async function changePassword(_prev: unknown, formData: FormData) {
     return { error: 'Current password is incorrect.' };
   }
   await db.user.update({ where: { id: user.id }, data: { passwordHash: hashPassword(next), provider: 'password' } });
+  await persistWorkspaceByInstitutionId(user.institutionId);
   return { ok: true, message: 'Password updated.' };
 }
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createHmac, timingSafeEqual } from 'crypto';
 import { db } from '@/lib/db';
 import { exchangeCodeForUser, Provider } from '@/lib/oauth';
+import { persistWorkspaceByInstitutionId, restorePersistedAuth } from '@/lib/persistent-auth';
 import { createSession } from '@/lib/session';
 
 const VALID: Provider[] = ['google', 'microsoft'];
@@ -57,15 +58,22 @@ async function finishOAuth(req: NextRequest, params: { provider: string }, input
     return fail('oauth_failed');
   }
 
+  await restorePersistedAuth();
+
   // Match the OAuth email to an existing account (created via signup or a prior OAuth login).
-  const users = await db.user.findMany({ where: { email: profile.email }, include: { institution: true } });
-  const user = users[0];
+  let users = await db.user.findMany({ where: { email: profile.email }, include: { institution: true } });
+  if (users.length === 0) {
+    await restorePersistedAuth({ force: true });
+    users = await db.user.findMany({ where: { email: profile.email }, include: { institution: true } });
+  }
+  let user = users[0];
 
   if (!user) {
     return fail('oauth_no_account');
   } else if (user.provider === 'password') {
     // Existing password account → link this provider so future social logins work too.
-    await db.user.update({ where: { id: user.id }, data: { provider } });
+    user = await db.user.update({ where: { id: user.id }, data: { provider }, include: { institution: true } });
+    await persistWorkspaceByInstitutionId(user.institutionId);
   }
 
   createSession({

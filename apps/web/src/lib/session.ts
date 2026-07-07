@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { createHmac, timingSafeEqual } from 'crypto';
 import { db } from './db';
+import { restorePersistedAuth } from './persistent-auth';
 
 const COOKIE = 'edunexus_session';
 const SECRET = process.env.SESSION_SECRET ?? 'dev-session-secret';
@@ -52,6 +53,7 @@ export function getSession(): SessionData | null {
 
 /** Create a session for a user id (used by password + OAuth login). */
 export async function establishSessionForUser(userId: string): Promise<void> {
+  await restorePersistedAuth();
   const user = await db.user.findUnique({ where: { id: userId }, include: { institution: true } });
   if (!user) throw new Error('User not found');
   createSession({
@@ -67,6 +69,7 @@ export async function establishSessionForUser(userId: string): Promise<void> {
 export async function requireSession(): Promise<SessionData> {
   const s = getSession();
   if (!s) throw new Error('UNAUTHENTICATED');
+  await restorePersistedAuth();
   // verify institution still exists
   const inst = await db.institution.findUnique({ where: { id: s.institutionId } });
   if (!inst) throw new Error('UNAUTHENTICATED');
