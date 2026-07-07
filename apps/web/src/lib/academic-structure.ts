@@ -33,14 +33,23 @@ export async function ensureStudentSections(institutionId: string) {
     },
   });
 
+  const createdSections = [];
   for (const section of defaults.sections) {
-    await db.section.create({
+    const created = await db.section.create({
       data: {
         institutionId,
         classId: klass.id,
         name: section,
         capacity: 40,
       },
+    });
+    createdSections.push(created);
+  }
+
+  if (createdSections[0]) {
+    await db.student.updateMany({
+      where: { institutionId, sectionId: null },
+      data: { sectionId: createdSections[0].id },
     });
   }
 
