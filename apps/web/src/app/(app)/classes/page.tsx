@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { Plus } from 'lucide-react';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
+import { ensureStudentSections } from '@/lib/academic-structure';
 import { getInstitutionTerminology } from '@/lib/institution-terminology';
 import { createClassWithSection, createSection } from '../actions';
 
@@ -13,6 +14,7 @@ export default async function ClassesPage() {
   if (!session) redirect('/login');
 
   const institutionId = session.institutionId;
+  await ensureStudentSections(institutionId);
   const [institution, classes] = await Promise.all([
     db.institution.findUnique({ where: { id: institutionId }, select: { type: true } }),
     db.schoolClass.findMany({
