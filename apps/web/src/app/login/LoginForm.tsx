@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { useFormState, useFormStatus } from 'react-dom';
 import { loginAction } from './actions';
@@ -17,7 +16,6 @@ function SubmitButton() {
 
 export function LoginForm({ google }: { google: boolean }) {
   const [state, formAction] = useFormState(loginAction, null as { error?: string } | null);
-  const [showInst, setShowInst] = useState(false);
 
   return (
     <div className="w-full space-y-2.5">
@@ -42,28 +40,6 @@ export function LoginForm({ google }: { google: boolean }) {
           <input name="password" type="password" autoComplete="current-password" required
             className="auth-bar mt-1 w-full px-3 rounded-lg border border-slate-200 text-sm text-slate-900 focus:ring-2 focus:ring-brand-500 outline-none" />
         </div>
-
-        {showInst ? (
-          <label className="block">
-            <span className="flex items-center justify-between text-xs text-slate-600">
-              Institution ID
-              <Link href="/institution-id" className="text-brand-600 hover:underline">Forgot or change?</Link>
-            </span>
-            <input name="institutionId" placeholder="e.g. GREEN-482"
-              className="auth-bar mt-1 w-full px-3 rounded-lg border border-slate-200 text-sm text-slate-900 focus:ring-2 focus:ring-brand-500 outline-none" />
-          </label>
-        ) : (
-          <div className="grid grid-cols-[1fr_auto] gap-2">
-            <button type="button" onClick={() => setShowInst(true)}
-              className="auth-bar auth-secondary-button flex w-full items-center rounded-lg border border-slate-200 px-3 text-left text-xs text-slate-500 hover:text-brand-600">
-              Add Institution ID
-            </button>
-            <Link href="/institution-id"
-              className="auth-bar auth-secondary-button flex items-center rounded-lg border border-slate-200 px-3 text-xs text-brand-600 hover:underline">
-              Forgot?
-            </Link>
-          </div>
-        )}
 
         <SubmitButton />
       </form>

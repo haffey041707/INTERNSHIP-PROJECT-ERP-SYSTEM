@@ -39,5 +39,5 @@ export async function signupAction(_prev: unknown, formData: FormData) {
   await db.section.create({ data: { institutionId: institution.id, classId: klass.id, name: '1-A', capacity: 40 } });
 
   // No auto-login — send them to sign in (as requested).
-  redirect(`/login?registered=1&code=${institution.code}`);
+  redirect('/login?registered=1');
 }

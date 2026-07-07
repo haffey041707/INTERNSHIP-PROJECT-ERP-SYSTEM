@@ -15,7 +15,7 @@ const BANNERS: Record<string, { kind: 'ok' | 'err'; text: string }> = {
 };
 
 export default function LoginPage({ searchParams }:
-  { searchParams: { registered?: string; reset?: string; error?: string; code?: string } }) {
+  { searchParams: { registered?: string; reset?: string; error?: string } }) {
   const key = searchParams.registered ? 'registered' : searchParams.reset ? 'reset' : searchParams.error;
   const banner = key ? BANNERS[key] : undefined;
 
@@ -41,9 +41,6 @@ export default function LoginPage({ searchParams }:
           {banner && (
             <p className={`text-sm rounded-lg px-3 py-2 ${banner.kind === 'ok' ? 'bg-green-50 text-success' : 'bg-red-50 text-danger'}`}>
               {banner.text}
-              {searchParams.code && banner.kind === 'ok' && (
-                <> Your Institution ID is <b>{searchParams.code}</b>.</>
-              )}
             </p>
           )}
           <LoginForm google={isConfigured('google')} />

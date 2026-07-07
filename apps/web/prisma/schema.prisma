@@ -14,7 +14,7 @@ datasource db {
 
 model Institution {
   id           String   @id @default(cuid())
-  code         String   @unique            // "DEMO-001"
+  code         String   @unique            // internal workspace code
   name         String
   type         String   @default("SCHOOL")
   currency     String   @default("USD")

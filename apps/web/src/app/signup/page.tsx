@@ -24,7 +24,7 @@ export default function SignupPage() {
           <p className="mt-3 max-w-md text-sm text-white/80">Set up the profile, admin account, and workspace in one clean step.</p>
           <ul className="mt-5 space-y-2 text-white/85 text-sm">
             <li className="flex items-center gap-2"><Check size={16} className="shrink-0" /> Your own private, isolated workspace</li>
-            <li className="flex items-center gap-2"><Check size={16} className="shrink-0" /> A unique Institution ID</li>
+            <li className="flex items-center gap-2"><Check size={16} className="shrink-0" /> Simple email and password access</li>
             <li className="flex items-center gap-2"><Check size={16} className="shrink-0" /> Students, attendance, exams &amp; fees out of the box</li>
           </ul>
         </div>

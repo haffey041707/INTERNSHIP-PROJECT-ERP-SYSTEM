@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { Building2, ShieldCheck, UserCircle, Copy, Database } from 'lucide-react';
+import { Building2, ShieldCheck, UserCircle, Database } from 'lucide-react';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { longDate } from '@/lib/format';
@@ -53,17 +53,12 @@ export default async function SettingsPage() {
         </form>
       </Card>
 
-      {/* Institution ID / identity */}
-      <Card icon={<UserCircle size={18} />} title="Workspace" subtitle="Identifiers for this institution.">
+      {/* Workspace identity */}
+      <Card icon={<UserCircle size={18} />} title="Workspace" subtitle="Signed-in account details.">
         <div className="grid sm:grid-cols-2 gap-3">
-          <ReadRow label="Institution ID" value={inst.code} mono />
           <ReadRow label="Signed in as" value={`${user.name}`} />
           <ReadRow label="Email" value={user.email} />
           <ReadRow label="Role" value={user.role.replace('_', ' ')} />
-        </div>
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-          <p className="text-xs text-slate-400 flex items-center gap-1"><Copy size={12} /> Share your Institution ID with staff so they can sign in to this workspace.</p>
-          <Link href="/institution-id" className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-brand-600 hover:bg-slate-50">Change Institution ID</Link>
         </div>
       </Card>
 
@@ -103,6 +98,6 @@ function Select({ label, name, defaultValue, options, raw }: { label: string; na
     <select name={name} defaultValue={defaultValue} className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-900">
       {options.map((o) => <option key={o} value={o}>{raw ? o : o[0] + o.slice(1).toLowerCase()}</option>)}</select></label>;
 }
-function ReadRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
-  return <div className="rounded-lg bg-slate-50 px-3 py-2"><p className="text-xs text-slate-400">{label}</p><p className={`text-sm text-slate-800 ${mono ? 'font-mono' : ''}`}>{value}</p></div>;
+function ReadRow({ label, value }: { label: string; value: string }) {
+  return <div className="rounded-lg bg-slate-50 px-3 py-2"><p className="text-xs text-slate-400">{label}</p><p className="text-sm text-slate-800">{value}</p></div>;
 }

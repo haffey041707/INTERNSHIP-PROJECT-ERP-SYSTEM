@@ -12,7 +12,6 @@ The active runnable system is the Next.js app in `apps/web`.
 - Premium fixed `#0F172A` system theme
 - Email and password authentication
 - Google OAuth sign-in
-- Institution ID lookup and change flow
 - Password reset flow
 - Dashboard with live KPIs and onboarding
 - Students, teachers, classes, sections, attendance, exams, fees, parents, timetable, announcements, reports, settings, and service modules
@@ -85,6 +84,8 @@ Google sign-in is optional. Email and password login works without OAuth credent
 ```bash
 pnpm --filter @edunexus/web db:setup
 ```
+
+This prepares a clean database. Create the first institution from the signup screen.
 
 ### 4. Start the app
 
