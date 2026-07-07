@@ -42,9 +42,9 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
       {students.length > 0 && (
         <Section title="Students" icon={<Users size={16} />} count={students.length}>
           {students.map((s) => (
-            <Link key={s.id} href={`/students/${s.id}`} className="flex items-center justify-between px-4 py-2.5 hover:bg-slate-50 border-b border-slate-50 last:border-0">
-              <span className="text-sm text-slate-800">{s.firstName} {s.lastName}</span>
-              <span className="text-xs text-slate-400">{s.admissionNo} · {s.section?.name ?? '—'}</span>
+            <Link key={s.id} href={`/students/${s.id}`} className="flex min-w-0 flex-col gap-1 px-4 py-2.5 hover:bg-slate-50 border-b border-slate-50 last:border-0 sm:flex-row sm:items-center sm:justify-between">
+              <span className="truncate text-sm text-slate-800">{s.firstName} {s.lastName}</span>
+              <span className="truncate text-xs text-slate-400">{s.admissionNo} · {s.section?.name ?? '—'}</span>
             </Link>
           ))}
         </Section>
@@ -53,9 +53,9 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
       {teachers.length > 0 && (
         <Section title="Teachers" icon={<GraduationCap size={16} />} count={teachers.length}>
           {teachers.map((t) => (
-            <Link key={t.id} href="/teachers" className="flex items-center justify-between px-4 py-2.5 hover:bg-slate-50 border-b border-slate-50 last:border-0">
-              <span className="text-sm text-slate-800">{t.name}</span>
-              <span className="text-xs text-slate-400">{t.subject} · {t.email}</span>
+            <Link key={t.id} href="/teachers" className="flex min-w-0 flex-col gap-1 px-4 py-2.5 hover:bg-slate-50 border-b border-slate-50 last:border-0 sm:flex-row sm:items-center sm:justify-between">
+              <span className="truncate text-sm text-slate-800">{t.name}</span>
+              <span className="truncate text-xs text-slate-400">{t.subject} · {t.email}</span>
             </Link>
           ))}
         </Section>

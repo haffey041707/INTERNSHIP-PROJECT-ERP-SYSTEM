@@ -21,19 +21,19 @@ export default async function EditStudentPage({ params }: { params: { id: string
   }
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-3xl">
       <Link href={`/students/${student.id}`} className="text-sm text-slate-500">← Back to profile</Link>
       <h1 className="text-2xl font-extrabold text-slate-900 mt-2 mb-6">Edit Student</h1>
 
       <form action={action} className="space-y-4 bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
         <input type="hidden" name="id" value={student.id} />
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field name="firstName" label="First name" defaultValue={student.firstName} required />
           <Field name="lastName" label="Last name" defaultValue={student.lastName} required />
           <Select name="gender" label="Gender" defaultValue={student.gender ?? ''} options={[['', '—'], ['M', 'Male'], ['F', 'Female']]} />
           <Select name="status" label="Status" defaultValue={student.status}
             options={[['ACTIVE', 'Active'], ['GRADUATED', 'Graduated'], ['TRANSFERRED', 'Transferred'], ['WITHDRAWN', 'Withdrawn']]} />
-          <label className="block col-span-2"><span className="text-sm text-slate-600">Section</span>
+          <label className="block sm:col-span-2"><span className="text-sm text-slate-600">Section</span>
             <select name="sectionId" defaultValue={student.sectionId ?? ''} className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-900">
               <option value="">— Unassigned —</option>
               {sections.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -41,9 +41,9 @@ export default async function EditStudentPage({ params }: { params: { id: string
           <Field name="guardianName" label="Guardian name" defaultValue={student.guardianName ?? ''} />
           <Field name="guardianPhone" label="Guardian phone" defaultValue={student.guardianPhone ?? ''} />
         </div>
-        <div className="flex gap-3 pt-2">
-          <button className="px-4 py-2 rounded-lg bg-brand-600 text-white text-sm">Save changes</button>
-          <Link href={`/students/${student.id}`} className="px-4 py-2 rounded-lg border border-slate-200 text-sm">Cancel</Link>
+        <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+          <button className="rounded-lg bg-brand-600 px-4 py-2 text-sm text-white">Save changes</button>
+          <Link href={`/students/${student.id}`} className="rounded-lg border border-slate-200 px-4 py-2 text-center text-sm">Cancel</Link>
         </div>
       </form>
     </div>

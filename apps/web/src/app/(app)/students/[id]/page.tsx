@@ -25,25 +25,25 @@ export default async function StudentProfile({ params }: { params: { id: string 
   const fmt = (c: number) => `$${(c / 100).toLocaleString()}`;
 
   return (
-    <div className="max-w-3xl">
-      <div className="flex items-center justify-between">
+    <div className="max-w-5xl">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <Link href="/students" className="text-sm text-slate-500">← Back to students</Link>
-        <Link href={`/students/${student.id}/edit`} className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:border-brand-400"><Pencil size={14} /> Edit</Link>
+        <Link href={`/students/${student.id}/edit`} className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-sm hover:border-brand-400"><Pencil size={14} /> Edit</Link>
       </div>
 
-      <div className="mt-3 rounded-xl bg-aurora text-white p-6 shadow-sm flex items-center gap-4">
-        <div className="w-16 h-16 rounded-full bg-white/20 grid place-items-center text-2xl font-bold">
+      <div className="mt-3 flex flex-col gap-4 rounded-xl bg-aurora p-5 text-white shadow-sm sm:flex-row sm:items-center sm:p-6">
+        <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-white/20 text-2xl font-bold">
           {student.firstName[0]}{student.lastName[0]}
         </div>
-        <div>
-          <h1 className="text-2xl font-extrabold">{student.firstName} {student.lastName}</h1>
+        <div className="min-w-0">
+          <h1 className="break-words text-2xl font-extrabold">{student.firstName} {student.lastName}</h1>
           <p className="text-white/80 text-sm">
             {student.admissionNo} · {student.section ? `${student.section.schoolClass.name} · ${student.section.name}` : 'Unassigned'}
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mt-4">
+      <div className="grid grid-cols-1 gap-3 mt-4 sm:grid-cols-3 sm:gap-4">
         <Stat label="Attendance" value={`${attendancePct}%`} />
         <Stat label="Fees billed" value={fmt(billed)} />
         <Stat label="Fees paid" value={fmt(paid)} />
@@ -76,6 +76,6 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
     <h2 className="font-semibold text-slate-900 mb-3">{title}</h2><div className="space-y-1">{children}</div></div>;
 }
 function Row({ k, v }: { k: string; v: string }) {
-  return <div className="flex justify-between text-sm py-1 border-b border-slate-50 last:border-0">
-    <span className="text-slate-500">{k}</span><span className="text-slate-900 font-medium">{v}</span></div>;
+  return <div className="flex min-w-0 justify-between gap-3 text-sm py-1 border-b border-slate-50 last:border-0">
+    <span className="shrink-0 text-slate-500">{k}</span><span className="min-w-0 break-words text-right font-medium text-slate-900">{v}</span></div>;
 }

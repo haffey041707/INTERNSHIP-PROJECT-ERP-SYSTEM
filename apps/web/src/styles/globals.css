@@ -900,9 +900,6 @@ body.theme-premium,
     line-height: 1.45rem !important;
   }
 
-  .theme-premium main .grid-cols-2,
-  .theme-premium main .grid-cols-3,
-  .theme-premium main .grid-cols-4,
   .theme-premium main .stagger {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 0.65rem !important;
