@@ -26,10 +26,11 @@ export const institutionSuites: InstitutionSuite[] = [
       { label: 'Campus services', value: '8' },
     ],
     sections: [
-      { title: 'Student Lifecycle', items: ['Enquiry to admission', 'Student profile', 'Guardian records', 'Health and conduct notes'] },
-      { title: 'Academic Operations', items: ['Class and section setup', 'Timetable planning', 'Lesson coverage', 'Homework and assignments'] },
-      { title: 'Attendance and Assessment', items: ['Daily attendance', 'Exam schedules', 'Gradebook entries', 'Report card publishing'] },
-      { title: 'Campus Services', items: ['Fee invoices', 'Transport routes', 'Hostel rooms', 'Library circulation'] },
+      { title: 'Admissions and SIS', items: ['Enquiry to admission', 'Student profile', 'Guardian records', 'Document checklist', 'Transfer certificates'] },
+      { title: 'Academic Operations', items: ['Class and section setup', 'Timetable planning', 'Lesson coverage', 'Homework and assignments', 'Substitution planning'] },
+      { title: 'Attendance and Behavior', items: ['Daily attendance', 'Late arrival tracking', 'Conduct notes', 'Parent alerts', 'House activities'] },
+      { title: 'Assessment and Reports', items: ['Exam schedules', 'Gradebook entries', 'Report card publishing', 'Promotion rules', 'Performance analytics'] },
+      { title: 'Campus Services', items: ['Fee invoices', 'Transport routes', 'Hostel rooms', 'Library circulation', 'Help desk tickets'] },
     ],
   },
   {
@@ -47,10 +48,11 @@ export const institutionSuites: InstitutionSuite[] = [
       { label: 'Outcome reports', value: '22' },
     ],
     sections: [
-      { title: 'Admissions and Enrollment', items: ['Application pipeline', 'Merit list tracking', 'Counseling rounds', 'Document verification'] },
-      { title: 'Programs and Semesters', items: ['Departments', 'Course credits', 'Elective groups', 'Semester timetables'] },
-      { title: 'Student Services', items: ['Scholarship records', 'Fee installments', 'Hostel allocation', 'Transport passes'] },
-      { title: 'Outcomes', items: ['Internal marks', 'Placement drives', 'Alumni records', 'Accreditation reports'] },
+      { title: 'Admissions and Enrollment', items: ['Application pipeline', 'Merit list tracking', 'Counseling rounds', 'Document verification', 'Seat matrix'] },
+      { title: 'Programs and Departments', items: ['Department setup', 'Program catalog', 'Course credits', 'Elective groups', 'Academic calendar'] },
+      { title: 'Semester Operations', items: ['Semester sections', 'Timetable planning', 'Faculty workload', 'Internal assessments', 'Attendance shortage'] },
+      { title: 'Student Services', items: ['Scholarship records', 'Fee installments', 'Hostel allocation', 'Transport passes', 'Mentor meetings'] },
+      { title: 'Outcomes and Placements', items: ['Outcome mapping', 'Placement drives', 'Internship tracking', 'Alumni records', 'Accreditation reports'] },
     ],
   },
   {
@@ -60,7 +62,7 @@ export const institutionSuites: InstitutionSuite[] = [
     shortTitle: 'University',
     eyebrow: 'Multi-campus governance',
     description: 'A university operating model for faculties, registrar work, research, compliance, housing, and transcripts.',
-    highlights: ['Faculties', 'Registrar', 'Research', 'Compliance', 'Transcripts', 'Housing'],
+    highlights: ['Campuses', 'Faculties', 'Registrar', 'Research', 'Compliance', 'Transcripts', 'Housing'],
     stats: [
       { label: 'Governance areas', value: '14' },
       { label: 'Registrar flows', value: '28' },
@@ -68,10 +70,11 @@ export const institutionSuites: InstitutionSuite[] = [
       { label: 'Compliance packs', value: '9' },
     ],
     sections: [
-      { title: 'Structure and Governance', items: ['Campuses', 'Faculties', 'Schools and departments', 'Program ownership'] },
-      { title: 'Registrar Operations', items: ['Enrollment', 'Credit transfer', 'Exam control', 'Transcript requests'] },
-      { title: 'Research and Compliance', items: ['Grant records', 'Ethics approvals', 'Publications', 'Accreditation evidence'] },
-      { title: 'Student Experience', items: ['Advising', 'Scholarships', 'Housing', 'Library and support desks'] },
+      { title: 'Governance and Campuses', items: ['Campus registry', 'Faculty hierarchy', 'Schools and departments', 'Program ownership', 'Senate workflows'] },
+      { title: 'Registrar Operations', items: ['Enrollment records', 'Credit transfer', 'Course registration', 'Exam control', 'Transcript requests'] },
+      { title: 'Academic Affairs', items: ['Program outcomes', 'Curriculum versions', 'Faculty workload', 'Academic calendar', 'Graduation audit'] },
+      { title: 'Research Administration', items: ['Grant records', 'Ethics approvals', 'Publications', 'Research milestones', 'Funding reports'] },
+      { title: 'Compliance and Student Life', items: ['Accreditation evidence', 'Scholarships', 'Housing', 'Library services', 'Support desk cases'] },
     ],
   },
   {
@@ -89,10 +92,11 @@ export const institutionSuites: InstitutionSuite[] = [
       { label: 'Branch tools', value: '10' },
     ],
     sections: [
-      { title: 'Lead and Course Sales', items: ['Enquiry capture', 'Course catalog', 'Follow-ups', 'Demo class booking'] },
-      { title: 'Batch Delivery', items: ['Batch schedules', 'Trainer allocation', 'Attendance', 'Assignments and tests'] },
-      { title: 'Revenue and Certification', items: ['Invoices', 'Discounts', 'Installments', 'Certificates'] },
-      { title: 'Branch Operations', items: ['Branch dashboards', 'Resource booking', 'Help desk tickets', 'Campaign reports'] },
+      { title: 'Lead and Enrollment CRM', items: ['Enquiry capture', 'Course catalog', 'Follow-ups', 'Demo class booking', 'Admission conversion'] },
+      { title: 'Course and Batch Delivery', items: ['Batch schedules', 'Trainer allocation', 'Learner attendance', 'Assignments and tests', 'Session recordings'] },
+      { title: 'Trainer Operations', items: ['Trainer calendar', 'Workload tracking', 'Resource requests', 'Performance notes', 'Replacement planning'] },
+      { title: 'Revenue and Certification', items: ['Invoices', 'Discounts', 'Installments', 'Payment reminders', 'Certificates'] },
+      { title: 'Branch and Support', items: ['Branch dashboards', 'Resource booking', 'Help desk tickets', 'Campaign reports', 'Renewal pipelines'] },
     ],
   },
 ];

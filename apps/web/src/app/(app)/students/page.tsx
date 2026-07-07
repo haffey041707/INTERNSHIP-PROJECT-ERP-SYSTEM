@@ -3,6 +3,7 @@ import { Search, Trash2, UserPlus } from 'lucide-react';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { ensureStudentSections } from '@/lib/academic-structure';
+import { getInstitutionTerminology } from '@/lib/institution-terminology';
 import { deleteStudent } from '../actions';
 
 export const dynamic = 'force-dynamic';
@@ -12,27 +13,31 @@ export default async function StudentsPage({ searchParams }: { searchParams: { q
   const q = searchParams.q?.trim() ?? '';
   await ensureStudentSections(institutionId);
 
-  const students = await db.student.findMany({
-    where: {
-      institutionId,
-      ...(q ? { OR: [
-        { firstName: { contains: q } }, { lastName: { contains: q } }, { admissionNo: { contains: q } },
-      ] } : {}),
-    },
-    include: { section: true },
-    orderBy: { createdAt: 'desc' },
-    take: 100,
-  });
+  const [institution, students] = await Promise.all([
+    db.institution.findUnique({ where: { id: institutionId }, select: { type: true } }),
+    db.student.findMany({
+      where: {
+        institutionId,
+        ...(q ? { OR: [
+          { firstName: { contains: q } }, { lastName: { contains: q } }, { admissionNo: { contains: q } },
+        ] } : {}),
+      },
+      include: { section: true },
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+    }),
+  ]);
+  const terms = getInstitutionTerminology(institution?.type);
 
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <h1 className="text-2xl font-extrabold text-slate-900">Students</h1>
+          <h1 className="text-2xl font-extrabold text-slate-900">{terms.learners}</h1>
           <p className="text-slate-500 text-sm">{students.length} shown · stored in your database</p>
         </div>
         <Link href="/students/new" className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg bg-brand-600 px-3 text-sm font-medium text-white">
-          <UserPlus size={16} /> Add Student
+          <UserPlus size={16} /> {terms.addLearner}
         </Link>
       </div>
 
@@ -46,9 +51,9 @@ export default async function StudentsPage({ searchParams }: { searchParams: { q
         <table className="w-full min-w-[780px] text-sm">
           <thead className="text-left text-slate-400 bg-slate-50">
             <tr>
-              <th className="px-4 py-3">Adm. No</th>
+              <th className="px-4 py-3">{terms.idLabel}</th>
               <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Section</th>
+              <th className="px-4 py-3">{terms.section}</th>
               <th className="px-4 py-3">Gender</th>
               <th className="px-4 py-3">Guardian</th>
               <th className="px-4 py-3">Status</th>
@@ -80,7 +85,7 @@ export default async function StudentsPage({ searchParams }: { searchParams: { q
             ))}
             {students.length === 0 && (
               <tr><td colSpan={7} className="px-4 py-10 text-center text-slate-400">
-                No students found.
+                No {terms.learners.toLowerCase()} found.
               </td></tr>
             )}
           </tbody>
@@ -100,7 +105,7 @@ export default async function StudentsPage({ searchParams }: { searchParams: { q
               <span className="shrink-0 rounded-full bg-green-50 px-2 py-1 text-[11px] font-medium text-success">{s.status}</span>
             </div>
             <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-              <Info label="Section" value={s.section?.name ?? 'Unassigned'} />
+              <Info label={terms.section} value={s.section?.name ?? `No ${terms.section.toLowerCase()}`} />
               <Info label="Gender" value={s.gender ?? '—'} />
               <Info label="Guardian" value={s.guardianName ?? '—'} wide />
             </div>
@@ -117,7 +122,7 @@ export default async function StudentsPage({ searchParams }: { searchParams: { q
         ))}
         {students.length === 0 && (
           <div className="rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm">
-            <p className="text-sm text-slate-400">No students found.</p>
+            <p className="text-sm text-slate-400">No {terms.learners.toLowerCase()} found.</p>
           </div>
         )}
       </div>

@@ -3,17 +3,20 @@ import Link from 'next/link';
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { ensureStudentSections } from '@/lib/academic-structure';
+import { getInstitutionTerminology } from '@/lib/institution-terminology';
 import { updateStudent } from '../../../actions';
 
 export const dynamic = 'force-dynamic';
 
 export default async function EditStudentPage({ params }: { params: { id: string } }) {
   const institutionId = getSession()!.institutionId;
-  const [student, sections] = await Promise.all([
+  const [student, sections, institution] = await Promise.all([
     db.student.findFirst({ where: { id: params.id, institutionId } }),
     ensureStudentSections(institutionId),
+    db.institution.findUnique({ where: { id: institutionId }, select: { type: true } }),
   ]);
   if (!student) notFound();
+  const terms = getInstitutionTerminology(institution?.type);
 
   async function action(formData: FormData) {
     'use server';
@@ -24,7 +27,7 @@ export default async function EditStudentPage({ params }: { params: { id: string
   return (
     <div className="max-w-3xl">
       <Link href={`/students/${student.id}`} className="text-sm text-slate-500">← Back to profile</Link>
-      <h1 className="text-2xl font-extrabold text-slate-900 mt-2 mb-6">Edit Student</h1>
+      <h1 className="text-2xl font-extrabold text-slate-900 mt-2 mb-6">Edit {terms.learner}</h1>
 
       <form action={action} className="space-y-4 bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
         <input type="hidden" name="id" value={student.id} />
@@ -34,9 +37,9 @@ export default async function EditStudentPage({ params }: { params: { id: string
           <Select name="gender" label="Gender" defaultValue={student.gender ?? ''} options={[['', '—'], ['M', 'Male'], ['F', 'Female']]} />
           <Select name="status" label="Status" defaultValue={student.status}
             options={[['ACTIVE', 'Active'], ['GRADUATED', 'Graduated'], ['TRANSFERRED', 'Transferred'], ['WITHDRAWN', 'Withdrawn']]} />
-          <label className="block sm:col-span-2"><span className="text-sm text-slate-600">Section</span>
+          <label className="block sm:col-span-2"><span className="text-sm text-slate-600">{terms.section}</span>
             <select name="sectionId" required defaultValue={student.sectionId ?? ''} className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-900">
-              <option value="" disabled>Choose section</option>
+              <option value="" disabled>Choose {terms.section.toLowerCase()}</option>
               {sections.map((s) => <option key={s.id} value={s.id}>{sectionLabel(s)}</option>)}
             </select></label>
           <Field name="guardianName" label="Guardian name" defaultValue={student.guardianName ?? ''} />

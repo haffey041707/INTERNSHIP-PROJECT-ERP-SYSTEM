@@ -10,6 +10,7 @@ import {
   Files, CalendarCheck, LifeBuoy, Menu, X,
 } from 'lucide-react';
 import { logoutAction } from '@/app/login/actions';
+import { getInstitutionTerminology } from '@/lib/institution-terminology';
 
 const SUITE_NAV = [
   { type: 'SCHOOL', href: '/school', icon: School, label: 'School ERP' },
@@ -55,7 +56,11 @@ export function AppShell({ user, notifications, children }:
   const [mobileOpen, setMobileOpen] = useState(false);
   const initials = user.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase();
   const selectedSuite = SUITE_NAV.find((item) => item.type === user.institutionType.toUpperCase()) ?? SUITE_NAV[0];
-  const nav = [BASE_NAV[0], selectedSuite, ...BASE_NAV.slice(1)];
+  const terms = getInstitutionTerminology(user.institutionType);
+  const nav = [BASE_NAV[0], selectedSuite, ...BASE_NAV.slice(1)].map((item) => ({
+    ...item,
+    label: terms.nav[item.href] ?? item.label,
+  }));
 
   useEffect(() => {
     setMobileOpen(false);
@@ -136,7 +141,7 @@ export function AppShell({ user, notifications, children }:
           {/* Global search */}
           <form action="/search" className="h-9 min-w-0 flex-[1_1_100%] flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 focus-within:ring-2 focus-within:ring-brand-500">
             <Search size={16} className="text-slate-400 shrink-0" />
-            <input name="q" placeholder="Search students, staff, modules..." autoComplete="off"
+            <input name="q" placeholder={`Search ${terms.learners.toLowerCase()}, ${terms.educators.toLowerCase()}, modules...`} autoComplete="off"
               className="min-w-0 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 outline-none w-full" />
           </form>
 

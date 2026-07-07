@@ -7,7 +7,9 @@ import {
 import { db } from '@/lib/db';
 import { getSession } from '@/lib/session';
 import { money, longDate, daysSince, lastDays } from '@/lib/format';
+import { ensureStudentSections } from '@/lib/academic-structure';
 import { getInstitutionSuiteForType, slugifyFeature } from '@/lib/institution-suites';
+import { getInstitutionTerminology } from '@/lib/institution-terminology';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,6 +20,7 @@ export default async function DashboardPage() {
   const institutionId = session.institutionId;
   const today = new Date().toISOString().slice(0, 10);
   const days = lastDays(7);
+  await ensureStudentSections(institutionId);
 
   const [
     institution, students, teachers, classes, sections, exams, invoiceCount, attendanceCount,
@@ -35,7 +38,12 @@ export default async function DashboardPage() {
     db.attendanceRecord.count({ where: { institutionId, date: today } }),
     db.feeInvoice.aggregate({ where: { institutionId }, _sum: { amountCents: true } }),
     db.feeInvoice.aggregate({ where: { institutionId }, _sum: { paidCents: true } }),
-    db.student.findMany({ where: { institutionId }, orderBy: { createdAt: 'desc' }, take: 5, include: { section: true } }),
+    db.student.findMany({
+      where: { institutionId },
+      orderBy: { createdAt: 'desc' },
+      take: 5,
+      include: { section: { include: { schoolClass: true } } },
+    }),
     db.payment.findMany({ where: { institutionId }, orderBy: { paidAt: 'desc' }, take: 5, include: { invoice: { include: { student: true } } } }),
     db.attendanceRecord.groupBy({ by: ['date', 'status'], where: { institutionId, date: { in: days } }, _count: { _all: true } }),
     db.mark.findMany({ where: { institutionId }, include: { exam: { select: { maxMarks: true } } }, take: 2000 }),
@@ -57,13 +65,17 @@ export default async function DashboardPage() {
     return { date, pct: total ? Math.round((present / total) * 100) : 0, has: total > 0 };
   });
 
+  const suite = getInstitutionSuiteForType(institution?.type);
+  const suiteModule = suite.href.replace(/^\//, '');
+  const terms = getInstitutionTerminology(institution?.type);
+
   // onboarding state (drives the new-institution experience)
   const steps = [
-    { done: classes > 0 && sections > 0, label: 'Create a class & section', href: '/classes' },
-    { done: students > 0, label: 'Add your first student', href: '/students/new' },
-    { done: teachers > 0, label: 'Add a teacher', href: '/teachers/new' },
+    { done: classes > 0 && sections > 0, label: terms.setupStructure, href: '/classes' },
+    { done: students > 0, label: `Add your first ${terms.learner.toLowerCase()}`, href: '/students/new' },
+    { done: teachers > 0, label: terms.addEducator, href: '/teachers/new' },
     { done: attendanceCount > 0, label: 'Mark attendance', href: '/attendance' },
-    { done: exams > 0, label: 'Create an exam', href: '/exams/new' },
+    { done: exams > 0, label: `Create ${terms.examLabel.toLowerCase().replace(/s$/, '')}`, href: '/exams/new' },
     { done: invoiceCount > 0, label: 'Issue a fee invoice', href: '/fees' },
   ];
   const doneCount = steps.filter((s) => s.done).length;
@@ -71,11 +83,9 @@ export default async function DashboardPage() {
 
   // unified recent-activity feed
   const activity = [
-    ...recentStudents.map((s) => ({ at: s.createdAt, text: `Student enrolled: ${s.firstName} ${s.lastName}`, tag: 'Enrollment' })),
+    ...recentStudents.map((s) => ({ at: s.createdAt, text: `${terms.learner} added: ${s.firstName} ${s.lastName}`, tag: 'Enrollment' })),
     ...recentPayments.map((p) => ({ at: p.paidAt, text: `Fee collected from ${p.invoice.student.firstName} ${p.invoice.student.lastName} (${money(p.amountCents, currency)})`, tag: 'Payment' })),
   ].sort((a, b) => +new Date(b.at) - +new Date(a.at)).slice(0, 6);
-  const suite = getInstitutionSuiteForType(institution?.type);
-  const suiteModule = suite.href.replace(/^\//, '');
 
   return (
     <div className="space-y-6">
@@ -89,7 +99,7 @@ export default async function DashboardPage() {
           </p>
         </div>
         <Link href="/students/new" className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg bg-white/15 text-white border border-white/25 hover:bg-white/20">
-          <UserPlus size={16} /> Add Student
+          <UserPlus size={16} /> {terms.addLearner}
         </Link>
       </div>
 
@@ -97,7 +107,7 @@ export default async function DashboardPage() {
       {!setupComplete && (
         <div className="rounded-xl bg-white border border-slate-200 shadow-sm p-5">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-semibold text-slate-900">Get your institution set up</h2>
+            <h2 className="font-semibold text-slate-900">{terms.setupTitle}</h2>
             <span className="text-sm text-slate-500">{doneCount}/{steps.length} complete</span>
           </div>
           <div className="h-2 rounded-full bg-slate-100 overflow-hidden mb-4">
@@ -123,7 +133,7 @@ export default async function DashboardPage() {
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-brand-600">{suite.eyebrow}</p>
-            <h2 className="text-xl font-extrabold text-slate-900">{suite.title} home features</h2>
+            <h2 className="text-xl font-extrabold text-slate-900">{suite.title} command center</h2>
             <p className="mt-1 max-w-3xl text-sm text-slate-500">
               {suite.description}
             </p>
@@ -169,14 +179,14 @@ export default async function DashboardPage() {
 
       {/* KPI cards — clickable, live */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 stagger">
-        <Kpi href="/students" label="Students" value={String(students)} sub={`${sections} sections`} icon={<Users size={18} />} accent />
-        <Kpi href="/teachers" label="Teachers" value={String(teachers)} sub={`${classes} classes`} icon={<GraduationCap size={18} />} />
-        <Kpi href="/attendance" label="Attendance today" value={totalToday ? `${attendancePct}%` : '—'} sub={totalToday ? `${presentToday}/${totalToday} present` : 'not taken yet'} icon={<CheckSquare size={18} />} />
-        <Kpi href="/exams" label="Avg result" value={avgScore !== null ? `${avgScore}%` : '—'} sub={`${exams} exams`} icon={<Award size={18} />} />
-        <Kpi href="/fees" label="Fees collected" value={billed ? `${collectedPct}%` : '—'} sub={money(collected, currency)} icon={<CircleDollarSign size={18} />} />
-        <Kpi href="/fees" label="Outstanding" value={money(outstanding, currency)} sub={`${invoiceCount} invoices`} icon={<Wallet size={18} />} />
-        <Kpi href="/classes" label="Classes" value={String(classes)} sub={`${sections} sections`} icon={<School size={18} />} />
-        <Kpi href="/exams" label="Exams" value={String(exams)} sub="published" icon={<FileText size={18} />} />
+        <Kpi href="/students" label={terms.learners} value={String(students)} sub={`${sections} ${terms.sections.toLowerCase()}`} icon={<Users size={18} />} accent />
+        <Kpi href="/teachers" label={terms.educators} value={String(teachers)} sub={`${classes} ${terms.groups.toLowerCase()}`} icon={<GraduationCap size={18} />} />
+        <Kpi href="/attendance" label={terms.attendanceLabel} value={totalToday ? `${attendancePct}%` : '—'} sub={totalToday ? `${presentToday}/${totalToday} present` : 'not taken yet'} icon={<CheckSquare size={18} />} />
+        <Kpi href="/exams" label={terms.resultLabel} value={avgScore !== null ? `${avgScore}%` : '—'} sub={`${exams} ${terms.examLabel.toLowerCase()}`} icon={<Award size={18} />} />
+        <Kpi href="/fees" label={terms.feeLabel} value={billed ? `${collectedPct}%` : '—'} sub={money(collected, currency)} icon={<CircleDollarSign size={18} />} />
+        <Kpi href="/fees" label={terms.outstandingLabel} value={money(outstanding, currency)} sub={`${invoiceCount} invoices`} icon={<Wallet size={18} />} />
+        <Kpi href="/classes" label={terms.groups} value={String(classes)} sub={`${sections} ${terms.sections.toLowerCase()}`} icon={<School size={18} />} />
+        <Kpi href="/exams" label={terms.examLabel} value={String(exams)} sub="published" icon={<FileText size={18} />} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -203,25 +213,25 @@ export default async function DashboardPage() {
 
           <div className="rounded-xl p-5 bg-white shadow-sm border border-slate-200">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-semibold text-slate-900">Recently enrolled</h2>
+              <h2 className="font-semibold text-slate-900">Recently added {terms.learners.toLowerCase()}</h2>
               <Link href="/students" className="text-sm text-brand-600 flex items-center gap-1">View all <ArrowRight size={14} /></Link>
             </div>
             {recentStudents.length ? (
               <table className="w-full text-sm">
-                <thead className="text-left text-slate-400"><tr><th className="py-2">Adm. No</th><th>Name</th><th>Section</th><th>Status</th></tr></thead>
+                <thead className="text-left text-slate-400"><tr><th className="py-2">{terms.idLabel}</th><th>Name</th><th>{terms.section}</th><th>Status</th></tr></thead>
                 <tbody>
                   {recentStudents.map((s) => (
                     <tr key={s.id} className="border-t border-slate-100">
                       <td className="py-2 font-mono text-xs">{s.admissionNo}</td>
                       <td><Link href={`/students/${s.id}`} className="hover:text-brand-600">{s.firstName} {s.lastName}</Link></td>
-                      <td>{s.section?.name ?? '—'}</td>
+                      <td>{s.section ? `${s.section.schoolClass.name} · ${s.section.name}` : '—'}</td>
                       <td><span className="text-xs px-2 py-0.5 rounded-full bg-green-50 text-success">{s.status}</span></td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             ) : (
-              <EmptyHint icon={<UserPlus size={20} />} text="No students yet." cta="Add your first student" href="/students/new" />
+              <EmptyHint icon={<UserPlus size={20} />} text={`No ${terms.learners.toLowerCase()} yet.`} cta={`Add your first ${terms.learner.toLowerCase()}`} href="/students/new" />
             )}
           </div>
         </div>
