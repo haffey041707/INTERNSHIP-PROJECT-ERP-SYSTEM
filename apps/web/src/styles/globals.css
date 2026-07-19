@@ -1045,3 +1045,238 @@ body.theme-premium,
     padding-right: 0.75rem !important;
   }
 }
+
+/* Modern light ERP refresh */
+body.theme-premium {
+  --brand-50: #F5F3FF;
+  --brand-100: #EDE9FE;
+  --brand-200: #DDD6FE;
+  --brand-300: #C4B5FD;
+  --brand-400: #A78BFA;
+  --brand-500: #8B5CF6;
+  --brand-600: #6C4CF1;
+  --brand-700: #5B3FE6;
+  --brand-800: #4C1D95;
+  --brand-900: #2E1065;
+  --surface: #FFFFFF;
+  --surface-2: #F7F8FC;
+  --text-1: #0F172A;
+  --text-2: #64748B;
+  --theme-color: #6C4CF1;
+  --theme-accent: #6C4CF1;
+  --combo-gradient: linear-gradient(135deg, #6C4CF1 0%, #8B5CF6 56%, #06B6D4 130%);
+  --combo-soft: linear-gradient(135deg, rgba(108, 76, 241, 0.12), rgba(139, 92, 246, 0.08));
+  --glass-bg: #FFFFFF;
+  --glass-strong: #FFFFFF;
+  --glass-border: rgba(226, 232, 240, 0.95);
+  --glass-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
+  background: #F7F8FC !important;
+  color: #0F172A !important;
+}
+
+.theme-premium .erp-shell,
+.theme-premium .erp-main,
+.theme-premium .erp-main main,
+.theme-premium .erp-shell .bg-slate-100,
+.theme-premium .erp-shell .bg-\[\#F7F8FC\] {
+  background: #F7F8FC !important;
+  color: #0F172A !important;
+}
+
+.theme-premium .erp-shell .bg-white,
+.theme-premium .erp-shell header.bg-white,
+.theme-premium .erp-shell aside.bg-white,
+.theme-premium .erp-shell .rounded-xl.bg-white,
+.theme-premium .erp-shell .rounded-2xl.bg-white,
+.theme-premium .erp-shell .glass {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.055) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.theme-premium .erp-shell header {
+  background: rgba(255, 255, 255, 0.88) !important;
+  color: #0F172A !important;
+}
+
+.theme-premium .erp-shell aside {
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #0F172A !important;
+}
+
+.theme-premium .erp-shell .premium-home-hero,
+.theme-premium .erp-shell .premium-kpi-accent,
+.theme-premium .erp-shell .bg-aurora {
+  background-color: #6C4CF1 !important;
+  background-image: linear-gradient(135deg, #6C4CF1 0%, #8B5CF6 58%, #06B6D4 130%) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 22px 60px rgba(108, 76, 241, 0.2) !important;
+}
+
+.theme-premium .erp-shell .premium-home-hero *,
+.theme-premium .erp-shell .premium-kpi-accent *,
+.theme-premium .erp-shell .bg-aurora * {
+  color: inherit;
+}
+
+.theme-premium .erp-shell .bg-brand-600,
+.theme-premium .erp-shell .bg-violet-600 {
+  background: #6C4CF1 !important;
+  border-color: #6C4CF1 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 14px 32px rgba(108, 76, 241, 0.22) !important;
+}
+
+.theme-premium .erp-shell .text-slate-950,
+.theme-premium .erp-shell .text-slate-900,
+.theme-premium .erp-shell .text-slate-800,
+.theme-premium .erp-shell .text-slate-700,
+.theme-premium .erp-shell .font-medium,
+.theme-premium .erp-shell .font-semibold,
+.theme-premium .erp-shell .font-bold,
+.theme-premium .erp-shell .font-extrabold {
+  color: #0F172A !important;
+}
+
+.theme-premium .erp-shell .text-white,
+.theme-premium .erp-shell .bg-violet-600,
+.theme-premium .erp-shell .bg-violet-600 *,
+.theme-premium .erp-shell .bg-brand-600,
+.theme-premium .erp-shell .bg-brand-600 * {
+  color: #FFFFFF !important;
+}
+
+.theme-premium .erp-shell .text-slate-600 {
+  color: #475569 !important;
+}
+
+.theme-premium .erp-shell .text-slate-500,
+.theme-premium .erp-shell .text-slate-400,
+.theme-premium .erp-shell .text-slate-300 {
+  color: #64748B !important;
+}
+
+.theme-premium .erp-shell .text-brand-600,
+.theme-premium .erp-shell .text-violet-600,
+.theme-premium .erp-shell .text-violet-700 {
+  color: #6C4CF1 !important;
+}
+
+.theme-premium .erp-shell .bg-slate-50,
+.theme-premium .erp-shell .bg-slate-100 {
+  background: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+.theme-premium .erp-shell .bg-violet-50,
+.theme-premium .erp-shell .bg-brand-50 {
+  background: #F5F3FF !important;
+  border-color: #EDE9FE !important;
+  color: #6C4CF1 !important;
+}
+
+.theme-premium .erp-shell input,
+.theme-premium .erp-shell select,
+.theme-premium .erp-shell textarea {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+  box-shadow: none !important;
+}
+
+.theme-premium .erp-shell input.bg-transparent,
+.theme-premium .erp-shell form input {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+.theme-premium .erp-shell input::placeholder,
+.theme-premium .erp-shell textarea::placeholder {
+  color: #94A3B8 !important;
+}
+
+.theme-premium .erp-shell input:focus,
+.theme-premium .erp-shell select:focus,
+.theme-premium .erp-shell textarea:focus {
+  border-color: #C4B5FD !important;
+  box-shadow: 0 0 0 4px rgba(108, 76, 241, 0.09) !important;
+}
+
+.theme-premium .erp-shell option {
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+.theme-premium .erp-shell table,
+.theme-premium .erp-shell td,
+.theme-premium .erp-shell th,
+.theme-premium .erp-shell .font-mono {
+  color: #0F172A !important;
+}
+
+.theme-premium .erp-shell thead,
+.theme-premium .erp-shell main thead,
+.theme-premium .erp-shell .bg-slate-50.text-slate-400 {
+  background: #F8FAFC !important;
+  color: #64748B !important;
+}
+
+.theme-premium .erp-shell a:hover,
+.theme-premium .erp-shell button:hover,
+.theme-premium .erp-shell .hover\:bg-slate-50:hover,
+.theme-premium .erp-shell .hover\:bg-slate-100:hover {
+  background: #F5F3FF !important;
+  border-color: #DDD6FE !important;
+  color: #6C4CF1 !important;
+}
+
+.theme-premium .erp-shell .bg-violet-600:hover,
+.theme-premium .erp-shell .bg-brand-600:hover {
+  background: #5B3FE6 !important;
+  color: #FFFFFF !important;
+}
+
+body.erp-dark .erp-shell,
+body.erp-dark .erp-main main {
+  background: #0F172A !important;
+  color: #F8FAFC !important;
+}
+
+body.erp-dark .erp-shell .bg-white,
+body.erp-dark .erp-shell .bg-slate-50,
+body.erp-dark .erp-shell .bg-slate-100 {
+  background: #111827 !important;
+  border-color: rgba(148, 163, 184, 0.18) !important;
+  color: #F8FAFC !important;
+}
+
+body.erp-dark .erp-shell .text-slate-950,
+body.erp-dark .erp-shell .text-slate-900,
+body.erp-dark .erp-shell .text-slate-800,
+body.erp-dark .erp-shell .text-slate-700,
+body.erp-dark .erp-shell .font-semibold,
+body.erp-dark .erp-shell .font-bold,
+body.erp-dark .erp-shell .font-extrabold {
+  color: #F8FAFC !important;
+}
+
+body.erp-dark .erp-shell .text-slate-600,
+body.erp-dark .erp-shell .text-slate-500,
+body.erp-dark .erp-shell .text-slate-400 {
+  color: #CBD5E1 !important;
+}
+
+@media (max-width: 640px) {
+  .theme-premium .erp-shell main {
+    padding: 14px !important;
+  }
+
+  .theme-premium .erp-shell main .stagger {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
