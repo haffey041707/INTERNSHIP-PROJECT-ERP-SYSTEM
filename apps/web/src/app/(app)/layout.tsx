@@ -28,7 +28,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   }
   if (!user || !institution) redirect('/login');
 
-  const brand = '#6C4CF1';
+  const brand = '#0F172A';
   const notifications = announcements.map((a) => ({ id: a.id, title: a.title, audience: a.audience, when: longDate(a.createdAt) }));
 
   return (
