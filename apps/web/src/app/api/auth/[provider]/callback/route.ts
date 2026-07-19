@@ -35,8 +35,8 @@ function verifySignedState(state: string | null, provider: Provider): SignedStat
   }
 }
 
-function appUrl(req: NextRequest, path: string, origin?: string): URL {
-  return new URL(path, origin ?? req.nextUrl.origin);
+function appUrl(path: string): URL {
+  return new URL(path, process.env.APP_URL ?? 'http://localhost:3000');
 }
 
 async function finishOAuth(req: NextRequest, params: { provider: string }, input: { code: string | null; state: string | null; user?: string | null }) {
@@ -44,11 +44,10 @@ async function finishOAuth(req: NextRequest, params: { provider: string }, input
   const code = input.code;
   const state = input.state;
   const cookieState = req.cookies.get(`oauth_state_${provider}`)?.value;
-  let signedState: SignedState | null = null;
-  const fail = (e: string) => NextResponse.redirect(appUrl(req, `/login?error=${e}`, signedState?.callbackOrigin));
+  const fail = (e: string) => NextResponse.redirect(appUrl(`/login?error=${e}`));
 
   if (!VALID.includes(provider) || !code) return fail('oauth_failed');
-  signedState = verifySignedState(state, provider);
+  const signedState = verifySignedState(state, provider);
   if (!signedState) return fail('oauth_failed');
   if (cookieState && cookieState !== signedState.nonce) return fail('oauth_failed');
 
@@ -85,7 +84,7 @@ async function finishOAuth(req: NextRequest, params: { provider: string }, input
     role: user.role,
   });
 
-  const res = NextResponse.redirect(appUrl(req, '/dashboard', signedState.callbackOrigin));
+  const res = NextResponse.redirect(appUrl('/dashboard'));
   res.cookies.delete(`oauth_state_${provider}`);
   return res;
 }

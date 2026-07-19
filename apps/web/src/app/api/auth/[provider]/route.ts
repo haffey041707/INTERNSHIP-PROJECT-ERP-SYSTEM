@@ -6,7 +6,7 @@ const VALID: Provider[] = ['google', 'microsoft'];
 const STATE_SECRET = process.env.SESSION_SECRET ?? 'dev-session-secret';
 
 function preferredCallbackOrigin(req: NextRequest): string {
-  return req.nextUrl.origin;
+  return process.env.APP_URL ?? req.nextUrl.origin;
 }
 
 function signedState(provider: Provider, nonce: string, callbackOrigin: string): string {
