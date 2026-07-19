@@ -20,9 +20,6 @@ export function redirectUri(provider: Provider, origin = fallbackBase): string {
 }
 
 export function oauthRedirectUri(provider: Provider, origin = fallbackBase): string {
-  if (provider === 'google' && process.env.GOOGLE_REDIRECT_URI) {
-    return process.env.GOOGLE_REDIRECT_URI;
-  }
   return redirectUri(provider, origin);
 }
 

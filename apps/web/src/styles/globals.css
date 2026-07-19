@@ -1280,3 +1280,57 @@ body.erp-dark .erp-shell .text-slate-400 {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
+
+/* Login restore: keep auth premium/dark without affecting the light ERP shell. */
+.theme-premium .premium-login {
+  background:
+    radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.18), transparent 30%),
+    radial-gradient(circle at 88% 22%, rgba(200, 162, 74, 0.18), transparent 28%),
+    linear-gradient(135deg, #07111F 0%, #0F172A 43%, #0F4C4A 78%, #8A6B23 150%) !important;
+  color: #F8FAFC !important;
+}
+
+.theme-premium .premium-login .premium-brand-panel {
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.1) 0%, transparent 44%),
+    linear-gradient(135deg, #0F172A 0%, #123B4A 38%, #0F766E 74%, #C8A24A 135%) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.1), 24px 0 70px rgba(2, 6, 23, 0.28) !important;
+}
+
+.theme-premium .premium-login .premium-auth-card {
+  background:
+    linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 76, 74, 0.7) 58%, rgba(8, 145, 178, 0.34) 86%, rgba(200, 162, 74, 0.2) 122%) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: rgba(255, 255, 255, 0.94) !important;
+  box-shadow: 0 28px 78px rgba(2, 6, 23, 0.36) !important;
+  backdrop-filter: blur(22px) saturate(1.16) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(1.16) !important;
+}
+
+.theme-premium .premium-login .premium-auth-card input {
+  background: rgba(255, 255, 255, 0.13) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: #FFFFFF !important;
+}
+
+.theme-premium .premium-login .premium-auth-card input::placeholder {
+  color: rgba(226, 232, 240, 0.58) !important;
+}
+
+.theme-premium .premium-login .premium-auth-card .auth-submit-button {
+  background: #0F172A !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.theme-premium .premium-login .premium-auth-card .oauth-provider-button {
+  background: #FFFFFF !important;
+  border-color: rgba(226, 232, 240, 0.95) !important;
+  color: #0F172A !important;
+}
+
+.theme-premium .premium-login .premium-auth-card .oauth-provider-button *,
+.theme-premium .premium-login .premium-auth-card .oauth-provider-button span {
+  color: #0F172A !important;
+}
