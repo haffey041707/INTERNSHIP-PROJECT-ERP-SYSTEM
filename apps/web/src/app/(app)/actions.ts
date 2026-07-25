@@ -216,6 +216,82 @@ export async function saveMarks(formData: FormData) {
   revalidatePath(`/exams/${examId}`);
 }
 
+// ── Module workspaces ───────────────────────────────────────
+function modulePath(module: string, feature: string) {
+  return `/modules/${module}/${feature}`;
+}
+
+export async function createModuleRecord(formData: FormData) {
+  const institutionId = await tenant();
+  const module = String(formData.get('module') || '').trim();
+  const feature = String(formData.get('feature') || '').trim();
+  const title = String(formData.get('title') || '').trim();
+  if (!module || !feature || !title) return;
+  const details = String(formData.get('details') || '').trim();
+  const extraDetails = Array.from(formData.entries())
+    .filter(([key, value]) => key.startsWith('meta_') && String(value || '').trim())
+    .map(([key, value]) => {
+      const label = key
+        .replace(/^meta_/, '')
+        .split('_')
+        .filter(Boolean)
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(' ');
+      return `${label}: ${String(value).trim()}`;
+    });
+
+  await db.moduleRecord.create({
+    data: {
+      institutionId,
+      module,
+      feature,
+      title,
+      requester: String(formData.get('requester') || '').trim() || null,
+      owner: String(formData.get('owner') || '').trim() || null,
+      priority: String(formData.get('priority') || 'NORMAL'),
+      dueDate: String(formData.get('dueDate') || '').trim() || null,
+      details: [details, ...extraDetails].filter(Boolean).join('\n\n') || null,
+    },
+  });
+
+  await persistWorkspaceByInstitutionId(institutionId);
+  revalidatePath(modulePath(module, feature));
+  revalidatePath(`/${module}`);
+  revalidatePath('/dashboard');
+}
+
+export async function updateModuleRecordStatus(formData: FormData) {
+  const institutionId = await tenant();
+  const id = String(formData.get('id') || '');
+  const module = String(formData.get('module') || '').trim();
+  const feature = String(formData.get('feature') || '').trim();
+  const status = String(formData.get('status') || 'DRAFT');
+  if (!id || !module || !feature) return;
+
+  await db.moduleRecord.updateMany({
+    where: { id, institutionId },
+    data: { status },
+  });
+
+  await persistWorkspaceByInstitutionId(institutionId);
+  revalidatePath(modulePath(module, feature));
+  revalidatePath(`/${module}`);
+}
+
+export async function deleteModuleRecord(formData: FormData) {
+  const institutionId = await tenant();
+  const id = String(formData.get('id') || '');
+  const module = String(formData.get('module') || '').trim();
+  const feature = String(formData.get('feature') || '').trim();
+  if (!id || !module || !feature) return;
+
+  await db.moduleRecord.deleteMany({ where: { id, institutionId } });
+
+  await persistWorkspaceByInstitutionId(institutionId);
+  revalidatePath(modulePath(module, feature));
+  revalidatePath(`/${module}`);
+}
+
 // ── Data management ─────────────────────────────────────────
 const FIRST = ['Aisha', 'Omar', 'Mei', 'Ali', 'Sara', 'Yusuf', 'Lena', 'Noah', 'Zara', 'Ethan', 'Hana', 'Liam', 'Fatima', 'Ivan', 'Priya', 'Diego', 'Nora', 'Kofi', 'Sana', 'Max'];
 const LAST = ['Khan', 'Lopez', 'Chen', 'Raza', 'Ahmed', 'Smith', 'Patel', 'Ali', 'Kim', 'Garcia', 'Hassan', 'Nguyen', 'Brown', 'Silva', 'Okafor'];
@@ -254,6 +330,7 @@ export async function clearInstitutionData() {
   await db.attendanceRecord.deleteMany({ where: { institutionId } });
   await db.timetableSlot.deleteMany({ where: { institutionId } });
   await db.announcement.deleteMany({ where: { institutionId } });
+  await db.moduleRecord.deleteMany({ where: { institutionId } });
   await db.student.deleteMany({ where: { institutionId } });
   await db.section.deleteMany({ where: { institutionId } });
   await db.schoolClass.deleteMany({ where: { institutionId } });

@@ -26,6 +26,7 @@ model Institution {
   classes  SchoolClass[]
   sections Section[]
   students Student[]
+  moduleRecords ModuleRecord[]
 }
 
 model User {
@@ -197,4 +198,24 @@ model Announcement {
   audience      String   @default("ALL")       // ALL | TEACHERS | STUDENTS | PARENTS
   authorName    String?
   createdAt     DateTime @default(now())
+}
+
+model ModuleRecord {
+  id            String   @id @default(cuid())
+  institutionId String
+  institution   Institution @relation(fields: [institutionId], references: [id])
+  module        String
+  feature       String
+  title         String
+  requester     String?
+  owner         String?
+  status        String   @default("DRAFT")   // DRAFT | IN_REVIEW | APPROVED | CLOSED
+  priority      String   @default("NORMAL")  // LOW | NORMAL | HIGH | URGENT
+  dueDate       String?
+  details       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([institutionId, module, feature])
+  @@index([institutionId, status])
 }

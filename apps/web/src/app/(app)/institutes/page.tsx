@@ -1,17 +1,22 @@
 import { ERPModulePage } from '@/components/ERPModulePage';
 import { requireCurrentInstitutionSuite } from '@/lib/current-institution-suite';
+import { getMainWorkspace } from '@/lib/main-workspaces';
 
 export default async function InstitutesPage() {
-  const suite = await requireCurrentInstitutionSuite('/institutes');
+  await requireCurrentInstitutionSuite('/institutes');
+  const workspace = getMainWorkspace('institutes')!;
 
   return (
     <ERPModulePage
-      eyebrow={suite.eyebrow}
-      title={suite.title}
+      eyebrow={workspace.eyebrow}
+      title={workspace.title}
       moduleSlug="institutes"
-      description={suite.description}
-      stats={suite.stats}
-      sections={suite.sections}
+      description={workspace.description}
+      stats={workspace.stats}
+      workflow={workspace.workflow}
+      quickActions={workspace.quickActions}
+      reports={workspace.reports}
+      sections={workspace.sections}
     />
   );
 }

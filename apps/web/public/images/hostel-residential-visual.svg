@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" role="img" aria-labelledby="title desc">
+  <title id="title">Hostel residential operations visual</title>
+  <desc id="desc">A dark premium hostel ERP visual with residential blocks, room allocation, bed capacity, warden desk, leave pass, visitor register, meals, and care alerts.</desc>
+  <defs>
+    <linearGradient id="hostelBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1E1B4B"/>
+      <stop offset=".48" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#064E3B"/>
+    </linearGradient>
+    <linearGradient id="emerald" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#10B981"/>
+      <stop offset="1" stop-color="#14B8A6"/>
+    </linearGradient>
+    <linearGradient id="violet" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#6366F1"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F59E0B"/>
+      <stop offset="1" stop-color="#F97316"/>
+    </linearGradient>
+    <linearGradient id="rose" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FB7185"/>
+      <stop offset="1" stop-color="#EC4899"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="145%">
+      <feDropShadow dx="0" dy="20" stdDeviation="22" flood-color="#020617" flood-opacity=".36"/>
+    </filter>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="760" height="520" rx="44" fill="url(#hostelBg)"/>
+  <circle cx="160" cy="100" r="126" fill="#8B5CF6" opacity=".22" filter="url(#glow)"/>
+  <circle cx="604" cy="398" r="150" fill="#14B8A6" opacity=".20" filter="url(#glow)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="86" y="116" width="292" height="298" rx="34" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <path d="M126 394V170l106-68 106 68v224" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M172 394v-76a24 24 0 0124-24h72a24 24 0 0124 24v76" fill="rgba(255,255,255,.09)" stroke="rgba(255,255,255,.20)" stroke-width="6"/>
+    <g>
+      <rect x="152" y="188" width="52" height="46" rx="14" fill="url(#emerald)"/>
+      <rect x="208" y="188" width="52" height="46" rx="14" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.18)"/>
+      <rect x="264" y="188" width="52" height="46" rx="14" fill="url(#violet)"/>
+      <rect x="152" y="248" width="52" height="46" rx="14" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.18)"/>
+      <rect x="208" y="248" width="52" height="46" rx="14" fill="url(#amber)"/>
+      <rect x="264" y="248" width="52" height="46" rx="14" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.18)"/>
+    </g>
+    <path d="M206 348h52" stroke="#99F6E4" stroke-width="9" stroke-linecap="round"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="432" y="86" width="218" height="118" rx="34" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <circle cx="484" cy="145" r="34" fill="url(#emerald)"/>
+    <path d="M464 145h40M484 125v40" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+    <path d="M534 122h72M534 150h88M534 178h48" stroke="#CCFBF1" stroke-width="8" stroke-linecap="round" opacity=".88"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="440" y="232" width="104" height="104" rx="30" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <rect x="468" y="264" width="48" height="34" rx="10" fill="url(#violet)"/>
+    <path d="M468 285h48M480 264v-16h24v16" fill="none" stroke="#EDE9FE" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M462 354h58" stroke="#C4B5FD" stroke-width="8" stroke-linecap="round" opacity=".8"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="576" y="230" width="104" height="104" rx="30" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <circle cx="628" cy="282" r="32" fill="url(#amber)"/>
+    <path d="M628 260v24l18 10" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M600 352h56" stroke="#FDE68A" stroke-width="8" stroke-linecap="round" opacity=".82"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="458" y="372" width="192" height="62" rx="31" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <circle cx="492" cy="403" r="19" fill="url(#rose)"/>
+    <path d="M492 393v14M485 400h14" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+    <path d="M532 392h72M532 414h44" stroke="#FBCFE8" stroke-width="8" stroke-linecap="round" opacity=".82"/>
+  </g>
+
+  <path d="M378 182C410 160 416 152 432 146" fill="none" stroke="#14B8A6" stroke-width="7" stroke-linecap="round" opacity=".42"/>
+  <path d="M378 282C404 282 418 282 440 282" fill="none" stroke="#A78BFA" stroke-width="7" stroke-linecap="round" opacity=".42"/>
+  <path d="M378 340C418 372 428 392 458 404" fill="none" stroke="#FBBF24" stroke-width="7" stroke-linecap="round" opacity=".36"/>
+</svg>

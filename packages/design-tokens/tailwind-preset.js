@@ -26,7 +26,7 @@ module.exports = {
         card: '0 10px 30px rgba(15,23,42,.10)',
       },
       backgroundImage: {
-        aurora: 'linear-gradient(135deg, var(--brand-600,#0F172A) 0%, #134E4A 58%, #C8A24A 140%)',
+        aurora: 'linear-gradient(135deg, var(--brand-600,#0F172A) 0%, #1E293B 68%, #475569 130%)',
         sunrise: 'linear-gradient(135deg, #F59E0B 0%, #F43F5E 100%)',
       },
     },

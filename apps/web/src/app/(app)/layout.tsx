@@ -30,6 +30,34 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const brand = '#0F172A';
   const notifications = announcements.map((a) => ({ id: a.id, title: a.title, audience: a.audience, when: longDate(a.createdAt) }));
+  const accountRows = await db.user.findMany({
+    where: {
+      OR: [
+        { institutionId: session.institutionId },
+        { email: user.email },
+      ],
+    },
+    orderBy: { createdAt: 'desc' },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      role: true,
+      provider: true,
+      institution: { select: { code: true, name: true, type: true } },
+    },
+  });
+  const availableAccounts = accountRows.map((account) => ({
+    id: account.id,
+    name: account.name,
+    email: account.email,
+    role: account.role,
+    provider: account.provider,
+    institutionCode: account.institution.code,
+    institutionName: account.institution.name,
+    institutionType: account.institution.type,
+    current: account.id === session.userId,
+  }));
 
   return (
     <>
@@ -43,6 +71,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           institutionName: institution.name,
           institutionType: institution.type,
         }}
+        availableAccounts={availableAccounts}
         notifications={notifications}
       >
         {children}

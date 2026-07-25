@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" role="img" aria-labelledby="title desc">
+  <title id="title">Support service desk visual</title>
+  <desc id="desc">A premium support service desk visual with ticket triage, live chat, agent headset, SLA timer, and escalation workflow.</desc>
+  <defs>
+    <linearGradient id="supportBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#082F49"/>
+      <stop offset=".48" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#312E81"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#14B8A6"/>
+    </linearGradient>
+    <linearGradient id="violet" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#6366F1"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F59E0B"/>
+      <stop offset="1" stop-color="#F97316"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="145%">
+      <feDropShadow dx="0" dy="20" stdDeviation="22" flood-color="#020617" flood-opacity=".36"/>
+    </filter>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="760" height="520" rx="44" fill="url(#supportBg)"/>
+  <circle cx="146" cy="116" r="116" fill="#06B6D4" opacity=".24" filter="url(#glow)"/>
+  <circle cx="608" cy="390" r="146" fill="#8B5CF6" opacity=".22" filter="url(#glow)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="82" y="86" width="236" height="348" rx="34" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <rect x="112" y="122" width="176" height="54" rx="20" fill="rgba(34,211,238,.18)" stroke="rgba(125,211,252,.32)"/>
+    <path d="M134 149h72M134 165h114" stroke="#BAE6FD" stroke-width="7" stroke-linecap="round" opacity=".9"/>
+    <rect x="112" y="202" width="176" height="54" rx="20" fill="rgba(124,58,237,.18)" stroke="rgba(196,181,253,.28)"/>
+    <path d="M134 229h96M134 245h72" stroke="#DDD6FE" stroke-width="7" stroke-linecap="round" opacity=".9"/>
+    <rect x="112" y="282" width="176" height="54" rx="20" fill="rgba(245,158,11,.18)" stroke="rgba(253,230,138,.30)"/>
+    <path d="M134 309h76M134 325h118" stroke="#FDE68A" stroke-width="7" stroke-linecap="round" opacity=".9"/>
+    <rect x="112" y="362" width="118" height="34" rx="17" fill="url(#cyan)"/>
+    <path d="M137 379h68" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" opacity=".88"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <circle cx="438" cy="228" r="92" fill="rgba(255,255,255,.09)" stroke="rgba(255,255,255,.20)" stroke-width="2"/>
+    <circle cx="438" cy="216" r="42" fill="url(#cyan)"/>
+    <path d="M402 224c0-46 72-46 72 0v30c0 16-13 28-29 28h-18" fill="none" stroke="#E0F2FE" stroke-width="15" stroke-linecap="round"/>
+    <path d="M396 224h20M460 224h20" stroke="#0F172A" stroke-width="18" stroke-linecap="round" opacity=".8"/>
+    <circle cx="438" cy="178" r="22" fill="#FDE68A"/>
+    <path d="M420 201c10 14 29 14 39 0" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" opacity=".72"/>
+    <rect x="392" y="312" width="92" height="52" rx="26" fill="url(#violet)"/>
+    <path d="M416 338h44" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="552" y="112" width="112" height="112" rx="32" fill="rgba(255,255,255,.11)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <circle cx="608" cy="168" r="34" fill="url(#amber)"/>
+    <path d="M608 146v24l18 11" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M568 254h78" stroke="#FDE68A" stroke-width="8" stroke-linecap="round"/>
+    <path d="M584 276h46" stroke="#CBD5E1" stroke-width="7" stroke-linecap="round" opacity=".72"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="534" y="332" width="136" height="94" rx="30" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <path d="M602 354l38 14v24c0 18-15 31-38 39-23-8-38-21-38-39v-24l38-14z" fill="url(#cyan)"/>
+    <path d="M584 391l12 12 28-32" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <path d="M318 170C374 140 436 138 552 156" fill="none" stroke="#22D3EE" stroke-width="7" stroke-linecap="round" opacity=".42"/>
+  <path d="M318 318C392 362 458 374 534 376" fill="none" stroke="#A78BFA" stroke-width="7" stroke-linecap="round" opacity=".42"/>
+  <path d="M318 254C380 252 454 248 552 268" fill="none" stroke="#FBBF24" stroke-width="7" stroke-linecap="round" opacity=".36"/>
+</svg>

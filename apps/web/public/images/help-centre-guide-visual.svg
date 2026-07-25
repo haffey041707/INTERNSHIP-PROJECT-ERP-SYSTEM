@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360" role="img" aria-labelledby="title desc">
+  <title id="title">Help centre guide visual</title>
+  <desc id="desc">A professional help centre visual with search, chat, guide cards, password reset, and support answers.</desc>
+  <defs>
+    <linearGradient id="helpBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F5F3FF"/>
+      <stop offset=".48" stop-color="#EEF2FF"/>
+      <stop offset="1" stop-color="#ECFEFF"/>
+    </linearGradient>
+    <linearGradient id="bubble" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#EC4899"/>
+    </linearGradient>
+    <linearGradient id="mint" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#14B8A6"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F59E0B"/>
+      <stop offset="1" stop-color="#FB7185"/>
+    </linearGradient>
+    <filter id="shadow" x="-25%" y="-25%" width="150%" height="155%">
+      <feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#312E81" flood-opacity=".20"/>
+    </filter>
+  </defs>
+  <rect width="560" height="360" rx="34" fill="url(#helpBg)"/>
+  <circle cx="436" cy="76" r="84" fill="#C4B5FD" opacity=".34"/>
+  <circle cx="104" cy="288" r="96" fill="#67E8F9" opacity=".24"/>
+
+  <g filter="url(#shadow)">
+    <rect x="74" y="54" width="342" height="58" rx="29" fill="rgba(15,23,42,.80)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <circle cx="108" cy="83" r="13" fill="none" stroke="#C4B5FD" stroke-width="7"/>
+    <path d="M118 93l15 15" stroke="#C4B5FD" stroke-width="7" stroke-linecap="round"/>
+    <path d="M166 83h180" stroke="#C4B5FD" stroke-width="10" stroke-linecap="round" opacity=".78"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <path d="M128 148h168a36 36 0 0136 36v28a36 36 0 01-36 36h-72l-48 42v-42h-48a36 36 0 01-36-36v-28a36 36 0 0136-36z" fill="url(#bubble)"/>
+    <circle cx="178" cy="198" r="9" fill="#FFFFFF" opacity=".94"/>
+    <circle cx="220" cy="198" r="9" fill="#FFFFFF" opacity=".82"/>
+    <circle cx="262" cy="198" r="9" fill="#FFFFFF" opacity=".7"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="362" y="142" width="124" height="86" rx="25" fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.28)" stroke-width="2"/>
+    <circle cx="398" cy="185" r="23" fill="url(#mint)"/>
+    <path d="M389 185h18M398 176v18" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round"/>
+    <path d="M434 174h28M434 196h20" stroke="#E0F2FE" stroke-width="7" stroke-linecap="round" opacity=".82"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="344" y="252" width="130" height="58" rx="22" fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.28)" stroke-width="2"/>
+    <circle cx="376" cy="281" r="18" fill="url(#amber)"/>
+    <path d="M369 281h14M376 274v14" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+    <path d="M408 274h38M408 291h24" stroke="#FEF3C7" stroke-width="7" stroke-linecap="round" opacity=".82"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="86" y="280" width="132" height="42" rx="21" fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.28)" stroke-width="2"/>
+    <path d="M112 301h62" stroke="#A78BFA" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="190" cy="301" r="10" fill="#14B8A6"/>
+  </g>
+</svg>

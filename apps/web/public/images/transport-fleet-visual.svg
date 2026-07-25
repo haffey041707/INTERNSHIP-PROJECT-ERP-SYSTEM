@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" role="img" aria-labelledby="title desc">
+  <title id="title">Transport fleet operations visual</title>
+  <desc id="desc">A dark premium transport ERP visual with route map, bus fleet, stops, driver duty, daily trip sheet, fuel, maintenance, and safety alerts.</desc>
+  <defs>
+    <linearGradient id="transportBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#082F49"/>
+      <stop offset=".48" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#1E3A8A"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#38BDF8"/>
+      <stop offset="1" stop-color="#0EA5E9"/>
+    </linearGradient>
+    <linearGradient id="teal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#14B8A6"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F59E0B"/>
+      <stop offset="1" stop-color="#F97316"/>
+    </linearGradient>
+    <linearGradient id="violet" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#6366F1"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="145%">
+      <feDropShadow dx="0" dy="20" stdDeviation="22" flood-color="#020617" flood-opacity=".36"/>
+    </filter>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="760" height="520" rx="44" fill="url(#transportBg)"/>
+  <circle cx="140" cy="120" r="130" fill="#0EA5E9" opacity=".24" filter="url(#glow)"/>
+  <circle cx="614" cy="392" r="154" fill="#14B8A6" opacity=".18" filter="url(#glow)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="86" y="92" width="292" height="334" rx="36" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <path d="M134 346C166 258 214 262 226 180s76-88 112-36" fill="none" stroke="#38BDF8" stroke-width="11" stroke-linecap="round" opacity=".72"/>
+    <path d="M144 376C206 320 264 346 326 276" fill="none" stroke="#14B8A6" stroke-width="9" stroke-linecap="round" stroke-dasharray="10 15" opacity=".56"/>
+    <circle cx="132" cy="346" r="18" fill="url(#sky)"/>
+    <circle cx="226" cy="180" r="16" fill="url(#amber)"/>
+    <circle cx="338" cy="144" r="18" fill="url(#teal)"/>
+    <circle cx="326" cy="276" r="16" fill="url(#violet)"/>
+    <path d="M122 128h76M122 154h112" stroke="#BAE6FD" stroke-width="8" stroke-linecap="round" opacity=".78"/>
+    <rect x="126" y="386" width="168" height="30" rx="15" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.16)"/>
+    <path d="M150 401h92" stroke="#CFFAFE" stroke-width="8" stroke-linecap="round" opacity=".78"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="420" y="120" width="236" height="124" rx="34" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <rect x="454" y="162" width="124" height="48" rx="15" fill="url(#sky)"/>
+    <path d="M464 162l18-28h70l26 28" fill="none" stroke="#E0F2FE" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="484" cy="214" r="13" fill="#0F172A"/>
+    <circle cx="552" cy="214" r="13" fill="#0F172A"/>
+    <rect x="586" y="154" width="42" height="38" rx="12" fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.22)"/>
+    <path d="M598 173h18" stroke="#CFFAFE" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="430" y="278" width="102" height="102" rx="30" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <circle cx="481" cy="329" r="31" fill="url(#amber)"/>
+    <path d="M481 306v24l17 10" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M454 398h58" stroke="#FDE68A" stroke-width="8" stroke-linecap="round" opacity=".82"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="558" y="278" width="112" height="102" rx="30" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <path d="M614 304l32 12v23c0 17-13 29-32 37-19-8-32-20-32-37v-23l32-12z" fill="url(#teal)"/>
+    <path d="M598 340l10 10 22-27" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M588 398h54" stroke="#99F6E4" stroke-width="8" stroke-linecap="round" opacity=".82"/>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="448" y="408" width="198" height="54" rx="27" fill="rgba(255,255,255,.10)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <circle cx="480" cy="435" r="17" fill="url(#violet)"/>
+    <path d="M480 424v22M469 435h22" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+    <path d="M518 426h70M518 444h44" stroke="#DDD6FE" stroke-width="8" stroke-linecap="round" opacity=".82"/>
+  </g>
+
+  <path d="M378 166C396 164 402 164 420 166" fill="none" stroke="#38BDF8" stroke-width="7" stroke-linecap="round" opacity=".40"/>
+  <path d="M378 300C402 315 410 322 430 329" fill="none" stroke="#FBBF24" stroke-width="7" stroke-linecap="round" opacity=".40"/>
+  <path d="M378 360C430 408 438 426 448 435" fill="none" stroke="#A78BFA" stroke-width="7" stroke-linecap="round" opacity=".34"/>
+</svg>
