@@ -192,7 +192,7 @@ export function ModuleExperience({
                 </div>
               </div>
               <div className="erp-main-visual-frame min-w-0 border border-white/10 bg-white/8">
-                <img src="/images/dashboard-erp-banner-rounded.png?v=1" alt="College ERP workspace" className="erp-main-visual-image h-36 w-full object-cover sm:h-full sm:min-h-64" />
+                <img src="/images/college-dashboard-banner-rounded.png?v=1" alt="College ERP workspace" className="erp-main-visual-image h-36 w-full object-cover sm:h-full sm:min-h-64" />
               </div>
             </div>
           </section>
@@ -210,7 +210,7 @@ export function ModuleExperience({
           <section className="overflow-hidden rounded-2xl border border-white/10 bg-[#0F172A] p-3 shadow-sm sm:p-5">
             <div className="grid gap-3 xl:grid-cols-[.96fr_1.04fr] xl:gap-4">
               <div className="erp-main-visual-frame order-2 min-w-0 border border-white/10 bg-white/8 xl:order-none">
-                <img src="/images/dashboard-erp-banner-rounded.png?v=1" alt="University ERP workspace" className="erp-main-visual-image h-36 w-full object-cover sm:h-full sm:min-h-64" />
+                <img src="/images/university-dashboard-banner-rounded.png?v=1" alt="University ERP workspace" className="erp-main-visual-image h-36 w-full object-cover sm:h-full sm:min-h-64" />
               </div>
               <div className="min-w-0">
                 <p className="text-[10px] font-semibold uppercase tracking-widest text-violet-300 sm:text-xs">{moduleName}</p>

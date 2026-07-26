@@ -109,8 +109,12 @@ export function ERPModulePage({ title, eyebrow, description, stats, sections, wo
   const heroImage =
     moduleSlug === 'school'
       ? '/images/school-main-erp-rounded.png'
-      : moduleSlug === 'colleges' || moduleSlug === 'university'
-        ? '/images/dashboard-erp-banner-rounded.png'
+      : moduleSlug === 'colleges'
+        ? '/images/college-dashboard-banner-rounded.png'
+        : moduleSlug === 'university'
+          ? '/images/university-dashboard-banner-rounded.png'
+          : moduleSlug === 'institutes'
+            ? '/images/institute-main-erp-rounded.png'
         : null;
   const steps = workflow ?? [
     { title: 'Plan', detail: 'Prepare records, owners, policies, and checklists.' },
