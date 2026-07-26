@@ -24,7 +24,11 @@ export function LoginForm({ google }: { google: boolean }) {
         <p className="hidden text-xs text-slate-500 sm:block">Access your institution workspace.</p>
       </div>
 
-      {state?.error && <p className="text-sm text-danger bg-red-50 rounded-lg px-3 py-2">{state.error}</p>}
+      {state?.error && (
+        <p className="auth-status-banner auth-status-error" role="alert">
+          {state.error}
+        </p>
+      )}
 
       <form action={formAction} className="space-y-2.5">
         <label className="block">

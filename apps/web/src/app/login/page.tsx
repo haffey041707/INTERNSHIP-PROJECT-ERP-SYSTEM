@@ -39,7 +39,7 @@ export default function LoginPage({ searchParams }:
         </div>
         <div className="premium-auth-card w-full max-w-[370px] space-y-2.5 glass rounded-2xl border border-white/50 p-3 sm:p-4">
           {banner && (
-            <p className={`text-sm rounded-lg px-3 py-2 ${banner.kind === 'ok' ? 'bg-green-50 text-success' : 'bg-red-50 text-danger'}`}>
+            <p className={`auth-status-banner ${banner.kind === 'ok' ? 'auth-status-ok' : 'auth-status-error'}`}>
               {banner.text}
             </p>
           )}
