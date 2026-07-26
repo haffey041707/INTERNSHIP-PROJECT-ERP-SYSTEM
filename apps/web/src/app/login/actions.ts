@@ -25,12 +25,18 @@ export async function loginAction(_prev: unknown, formData: FormData) {
   }
   if (users.length === 0) return { error: 'No account found for that email.' };
 
-  const passwordUsers = users.filter((user) => user.passwordHash);
+  let passwordUsers = users.filter((user) => user.passwordHash);
   if (passwordUsers.length === 0) {
     return { error: `This account uses ${users[0].provider} sign-in. Use that button above.` };
   }
 
-  const user = passwordUsers.find((candidate) => verifyPassword(password, candidate.passwordHash!));
+  let user = passwordUsers.find((candidate) => verifyPassword(password, candidate.passwordHash!));
+  if (!user) {
+    await restorePersistedAuth({ force: true });
+    users = await db.user.findMany({ where: { email }, orderBy: { createdAt: 'desc' } });
+    passwordUsers = users.filter((candidate) => candidate.passwordHash);
+    user = passwordUsers.find((candidate) => verifyPassword(password, candidate.passwordHash!));
+  }
   if (!user) return { error: 'Incorrect password.' };
 
   await establishSessionForUser(user.id);
