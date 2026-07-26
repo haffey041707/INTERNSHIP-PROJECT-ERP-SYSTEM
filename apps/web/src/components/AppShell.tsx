@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
@@ -211,14 +211,23 @@ export function AppShell({ user, availableAccounts, notifications, children }:
   const mobilePanelRef = useRef<HTMLElement>(null);
   const initials = user.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase();
   const terms = getInstitutionTerminology(user.institutionType);
-  const nav = navForInstitution(terms.type);
-  const navGroups = groupedNav(nav);
+  const nav = useMemo(() => navForInstitution(terms.type), [terms.type]);
+  const navGroups = useMemo(() => groupedNav(nav), [nav]);
+  const routeActiveItem = getActiveNavItem(pathname, navGroups);
+  const routeActiveNavId = routeActiveItem?.id ?? null;
+  const [selectedNavId, setSelectedNavId] = useState<string | null>(routeActiveNavId);
+  const selectedNavItem = useMemo(
+    () => navGroups.flatMap((group) => group.items).find((item) => item.id === selectedNavId),
+    [navGroups, selectedNavId],
+  );
+  const activeNavId = selectedNavItem?.id ?? routeActiveNavId;
 
   useEffect(() => {
+    if (routeActiveNavId) setSelectedNavId(routeActiveNavId);
     setMobileOpen(false);
     setMenu(null);
     setProfileView('menu');
-  }, [pathname]);
+  }, [pathname, routeActiveNavId]);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -263,7 +272,13 @@ export function AppShell({ user, availableAccounts, notifications, children }:
       <CloseInteractivePanels />
       {/* Sidebar — fixed; its nav scrolls internally if long */}
       <aside className="premium-sidebar hidden h-[100svh] min-h-0 w-[17rem] shrink-0 lg:flex lg:flex-col">
-        <SidebarContent user={user} navGroups={navGroups} pathname={pathname} />
+        <SidebarContent
+          user={user}
+          navGroups={navGroups}
+          pathname={pathname}
+          activeNavId={activeNavId}
+          onSelectNav={setSelectedNavId}
+        />
       </aside>
 
       {/* Main */}
@@ -398,6 +413,8 @@ export function AppShell({ user, availableAccounts, notifications, children }:
               user={user}
               navGroups={navGroups}
               pathname={pathname}
+              activeNavId={activeNavId}
+              onSelectNav={setSelectedNavId}
               onNavigate={() => window.setTimeout(() => setMobileOpen(false), 120)}
             />
           </aside>
@@ -472,14 +489,22 @@ function SidebarContent({
   user,
   navGroups,
   pathname,
+  activeNavId,
+  onSelectNav,
   onNavigate,
 }: {
   user: User;
   navGroups: NavGroup[];
   pathname: string;
+  activeNavId?: string | null;
+  onSelectNav?: (id: string) => void;
   onNavigate?: () => void;
 }) {
-  const activeItem = getActiveNavItem(pathname, navGroups);
+  const routeActiveItem = getActiveNavItem(pathname, navGroups);
+  const selectedActiveItem = navGroups
+    .flatMap((group) => group.items)
+    .find((item) => item.id === activeNavId);
+  const activeItem = selectedActiveItem ?? routeActiveItem;
 
   return (
     <>
@@ -505,13 +530,16 @@ function SidebarContent({
             <div className="space-y-1">
               {group.items.map((item) => {
                 const Icon = item.icon;
-                const active = activeItem?.href === item.href;
+                const active = activeItem?.id === item.id;
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     aria-current={active ? 'page' : undefined}
-                    onClick={onNavigate}
+                    onClick={() => {
+                      onSelectNav?.(item.id);
+                      onNavigate?.();
+                    }}
                     className={`premium-nav-link ${active ? 'is-active' : ''}`}
                   >
                     <span className="premium-nav-icon">
