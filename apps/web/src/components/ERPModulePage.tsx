@@ -108,13 +108,13 @@ export function ERPModulePage({ title, eyebrow, description, stats, sections, wo
   const primaryItems = sections.flatMap((section) => section.items).slice(0, 6);
   const heroImage =
     moduleSlug === 'school'
-      ? '/images/school-main-erp-rounded.png'
+      ? '/images/school-dashboard-banner.png'
       : moduleSlug === 'colleges'
-        ? '/images/college-dashboard-banner-rounded.png'
+        ? '/images/college-dashboard-banner.png'
         : moduleSlug === 'university'
-          ? '/images/university-dashboard-banner-rounded.png'
+          ? '/images/university-dashboard-banner.png'
           : moduleSlug === 'institutes'
-            ? '/images/institute-main-erp-rounded.png'
+            ? '/images/institute-dashboard-banner.png'
         : null;
   const steps = workflow ?? [
     { title: 'Plan', detail: 'Prepare records, owners, policies, and checklists.' },
@@ -135,7 +135,7 @@ export function ERPModulePage({ title, eyebrow, description, stats, sections, wo
             <img
               src={heroImage}
               alt={`${title} workspace`}
-              className="erp-main-visual-image absolute inset-0 h-full w-full object-cover"
+              className="erp-desk-hero-image absolute inset-0 h-full w-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-slate-950/88 via-slate-950/48 to-slate-950/12" />
           </>

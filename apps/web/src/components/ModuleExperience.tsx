@@ -106,8 +106,8 @@ export function ModuleExperience({
                   ))}
                 </div>
               </div>
-              <div className="erp-main-visual-frame min-w-0 border border-white/10 bg-white/8">
-                <img src="/images/school-main-erp-rounded.png?v=1" alt="School ERP operations" className="erp-main-visual-image h-full min-h-64 w-full object-cover" />
+              <div className="erp-main-visual-frame erp-desk-visual-frame min-w-0 border border-white/10 bg-white/8">
+                <img src="/images/school-dashboard-banner.png?v=2" alt="School ERP operations" className="erp-desk-panel-image h-full min-h-64 w-full object-cover" />
               </div>
             </div>
           </section>
@@ -191,8 +191,8 @@ export function ModuleExperience({
                   ))}
                 </div>
               </div>
-              <div className="erp-main-visual-frame min-w-0 border border-white/10 bg-white/8">
-                <img src="/images/college-dashboard-banner-rounded.png?v=1" alt="College ERP workspace" className="erp-main-visual-image h-36 w-full object-cover sm:h-full sm:min-h-64" />
+              <div className="erp-main-visual-frame erp-desk-visual-frame min-w-0 border border-white/10 bg-white/8">
+                <img src="/images/college-dashboard-banner.png?v=2" alt="College ERP workspace" className="erp-desk-panel-image h-36 w-full object-cover sm:h-full sm:min-h-64" />
               </div>
             </div>
           </section>
@@ -209,8 +209,8 @@ export function ModuleExperience({
         <div className="space-y-3 sm:space-y-4">
           <section className="overflow-hidden rounded-2xl border border-white/10 bg-[#0F172A] p-3 shadow-sm sm:p-5">
             <div className="grid gap-3 xl:grid-cols-[.96fr_1.04fr] xl:gap-4">
-              <div className="erp-main-visual-frame order-2 min-w-0 border border-white/10 bg-white/8 xl:order-none">
-                <img src="/images/university-dashboard-banner-rounded.png?v=1" alt="University ERP workspace" className="erp-main-visual-image h-36 w-full object-cover sm:h-full sm:min-h-64" />
+              <div className="erp-main-visual-frame erp-desk-visual-frame order-2 min-w-0 border border-white/10 bg-white/8 xl:order-none">
+                <img src="/images/university-dashboard-banner.png?v=2" alt="University ERP workspace" className="erp-desk-panel-image h-36 w-full object-cover sm:h-full sm:min-h-64" />
               </div>
               <div className="min-w-0">
                 <p className="text-[10px] font-semibold uppercase tracking-widest text-violet-300 sm:text-xs">{moduleName}</p>

@@ -4119,3 +4119,64 @@ html body.theme-premium header form[action="/search"] input:focus-visible {
   box-shadow: none !important;
   background: transparent !important;
 }
+
+/* Category desk pages: make hero and panel images fill their spaces, not nested rounded patches. */
+html body.theme-premium main .premium-home-hero > img.erp-desk-hero-image,
+html body.theme-premium main .premium-home-hero > img.erp-desk-hero-image[src*="/images/"] {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  border-radius: 0 !important;
+  -webkit-border-radius: 0 !important;
+  -webkit-clip-path: none !important;
+  clip-path: none !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  transform: none !important;
+}
+
+html body.theme-premium main .erp-desk-visual-frame {
+  min-height: 16rem !important;
+  border-radius: 18px !important;
+  -webkit-clip-path: none !important;
+  clip-path: none !important;
+  overflow: hidden !important;
+}
+
+html body.theme-premium main .erp-desk-visual-frame > img.erp-desk-panel-image,
+html body.theme-premium main .erp-desk-visual-frame > img.erp-desk-panel-image[src*="/images/"] {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 16rem !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  border-radius: 0 !important;
+  -webkit-border-radius: 0 !important;
+  -webkit-clip-path: none !important;
+  clip-path: none !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  transform: none !important;
+}
+
+@media (max-width: 640px) {
+  html body.theme-premium main .erp-desk-visual-frame {
+    min-height: 11rem !important;
+  }
+
+  html body.theme-premium main .erp-desk-visual-frame > img.erp-desk-panel-image,
+  html body.theme-premium main .erp-desk-visual-frame > img.erp-desk-panel-image[src*="/images/"] {
+    min-height: 11rem !important;
+  }
+}
