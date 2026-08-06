@@ -23,6 +23,10 @@ the real OAuth 2.0 authorization-code flow — they just need you to register an
    ```
 5. Restart the dev server. The **Google** button is now live.
 
+The callback is built into this ERP at `/api/auth/google/callback`. Do not use a
+separate callback repository or relay page: OAuth state is verified with a secure,
+same-site cookie and must return directly to this application.
+
 ## Enabling Microsoft sign-in
 1. Go to https://portal.azure.com → **Azure Active Directory → App registrations → New registration**.
 2. Supported account types: choose what fits (e.g. "Accounts in any organizational directory and personal Microsoft accounts").

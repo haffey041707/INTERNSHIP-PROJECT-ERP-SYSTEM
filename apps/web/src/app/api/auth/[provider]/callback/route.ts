@@ -49,7 +49,9 @@ async function finishOAuth(req: NextRequest, params: { provider: string }, input
   if (!VALID.includes(provider) || !code) return fail('oauth_failed');
   const signedState = verifySignedState(state, provider);
   if (!signedState) return fail('oauth_failed');
-  if (cookieState && cookieState !== signedState.nonce) return fail('oauth_failed');
+  // The state cookie is created by this ERP before leaving for the provider.
+  // Requiring it prevents callbacks copied from another browser or relay app.
+  if (!cookieState || cookieState !== signedState.nonce) return fail('oauth_failed');
 
   let profile: { email: string; name: string };
   try {

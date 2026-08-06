@@ -20,9 +20,8 @@ export function redirectUri(provider: Provider, origin = fallbackBase): string {
 }
 
 export function oauthRedirectUri(provider: Provider, origin = fallbackBase): string {
-  if (provider === 'google' && process.env.GOOGLE_REDIRECT_URI) {
-    return process.env.GOOGLE_REDIRECT_URI;
-  }
+  // Keep the OAuth callback in this application. A separate callback/relay
+  // domain loses the signed state cookie and breaks CSRF verification.
   return redirectUri(provider, origin);
 }
 
